@@ -132,7 +132,7 @@ export default {
                 };
                 $.get('/ssm/user/queryUserAll',obj).then(function(sellerAllInfo) {
                     _this.sellerAllInfo = sellerAllInfo;
-                    console.log(sellerAllInfo);
+                    console.log(sellerAllInfo,'=======sellerAllInfo=======');
                 });
             }
 

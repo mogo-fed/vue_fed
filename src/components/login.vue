@@ -58,9 +58,10 @@
             $.get('/ssm/user/queryByName',{username:this.username,userpwd:this.userpwd,usertype:this.usertype}).then( function (data) {
                 console.log(data,'ppppppp');
                 if (data){  //查询成功
-                    localStorage.setItem('username',_this.username);
-                    localStorage.setItem('userpwd',_this.userpwd);
-                    localStorage.setItem('usertype',_this.usertype);
+                    localStorage.setItem('username',data.userName);
+                    localStorage.setItem('userpwd',data.userPwd);
+                    localStorage.setItem('usertype',data.userType);
+                    localStorage.setItem('userid',data.userId);
                     if(_this.usertype == 0){  //普通用户，跳转至商家列表 home
                         $router.replace('/users/home');
                     }else { //商家，跳转至BS sellerInfo

@@ -142,7 +142,7 @@ export default {
         },
         getMenuDetail(){
             let _this = this;
-            $.get('/ssm/menudetail/queryMdByMsId',{msId:''}).then(function (menuDetailData) {
+            $.get('/ssm/menudetail/queryMenuDetailAll').then(function (menuDetailData) {
                 _this.menuDetailData = menuDetailData;
 
                 console.log(this.menuDetailData,'=========menuDetailData=========');

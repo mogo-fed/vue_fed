@@ -51,7 +51,6 @@ export default {
                 console.log(data,'data111111111');
                 console.log(data.userTel,'0000000');
                 localStorage.setItem('usertel',data.userTel);
-                localStorage.setItem('userid',data.userId);
                 _this.userinfo = data;
                 if(data != 0){
                     _this.userInfo = false;
