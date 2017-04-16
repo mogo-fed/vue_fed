@@ -83,7 +83,7 @@
             <!-- 商家列表 -->
 
             <div class="seller_list">
-                <item @click.native="$router.forward('FoodDetail')" v-for="item in sellerAllInfo">
+                <item @click.native="toFoodDetail" v-for="item in sellerAllInfo" :data-sellerId="item.userId">
                     <div class="left seller_list_divimg">
                         <img src="src/static/images/seller1.jpg" alt="商家图片">
                     </div>
@@ -111,8 +111,7 @@ import Swiper from 'swiper'
 export default {
         data() {
             return {
-                sellerAllInfo:[],
-                userid:localStorage.getItem('userid')
+                sellerAllInfo:[]
             }
         },
         created() {
@@ -126,16 +125,17 @@ export default {
             },
             getUserAll() {
                 let _this = this;
-                let obj = {
-                    userid:this.userid,
-                    usertype:1
-                };
-                $.get('/ssm/user/queryUserAll',obj).then(function(sellerAllInfo) {
+                $.get('/ssm/user/queryUserAll').then(function(sellerAllInfo) {
                     _this.sellerAllInfo = sellerAllInfo;
                     console.log(sellerAllInfo,'=======sellerAllInfo=======');
                 });
+            },
+            toFoodDetail(){
+                //得到当前选中的商家id
+                let sellerId = $(event.currentTarget).data('sellerid');
+                console.log(sellerId,'--------------sellerid-------');
+                $router.push({path:'foodDetail',query:{sellerId:sellerId}});
             }
-
         },
         components: {},
         mounted() {

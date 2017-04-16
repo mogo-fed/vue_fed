@@ -2,14 +2,14 @@
     <div class="page has-navbar has-tabbar" v-nav="{title: '菜更香', showBackButton: true}">
         <div class="page-content" style="padding-top: 45px;height:100%;">
             <div class="detail__top">
-                <div class="detail__top--con">
+                <div class="detail__top--con" >
                     <div class="detail__top--left">
                         <div class="detail__top--logo"><img src="/src/static/images/restaurant.jpg"></div>
                     </div>
                     <div class="detail__top--right">
-                        <div class="detail__top--title">菜更香</div>
+                        <div class="detail__top--title">{{sellerInfo.userSellerName}}</div>
                         <div class="detail__top--remark">月销量：103笔</div>
-                        <div class="detail__top--remark"><span><i class="demo-icon icon-location"></i>1.6km</span><span>￥19元起送</span></div>
+                        <div class="detail__top--remark"><span><i class="demo-icon icon-location"></i>1.6km</span><span>￥{{sellerInfo.userSendPay}}元起送</span></div>
                     </div>
                 </div>
             </div>
@@ -21,7 +21,8 @@
                     <!--列表了-->
                     <div class="detail__menu--title menu-wrapper" ref="menuWrapper">
                         <ul>
-                            <li v-for="(item,index) in menuSortData" @click="menuClick(index,$event)" :class="index==menuCurrentIndex?'menu-item-selected':'menu-item'"> {{item.msName}}</li>
+                            <li v-for="(item,index) in menuSortData" @click="menuClick(index,$event)" :data-msId="item.msId"
+                                :class="index==menuCurrentIndex?'menu-item-selected':'menu-item'"> {{item.msName}}</li>
                         </ul>
                     </div>
                     <div class="detail__menu--con" id="wrapper" ref="foodsWrapper">
@@ -29,8 +30,9 @@
                             <li v-for="(item,indexClass) in goods" class="food-list food-list-hook">
                                 <h1>{{item.name}}</h1>
                                 <ul>
-                                    <li v-for="(food,index) in item.foods"   @click="menuChoose(indexClass,index,food)" :class="selectedFood.indexOf(indexClass+''+index) > -1?'food-item choose':'food-item'" :data-name="food.name" :data-price="food.price">
-
+                                    <li v-for="(food,index) in item.foods"  @click="menuChoose(indexClass,index,food)"
+                                        :class="selectedFood.indexOf(indexClass+''+index) > -1?'food-item choose':'food-item'"
+                                        :data-name="food.name" :data-price="food.price">
                                         <div class="icon"><img width="57" height="57" :src="food.icon" /></div>
                                         <div class="content">
                                             <h2>{{food.name}}</h2>
@@ -76,7 +78,7 @@
                             </span>
                         </div>
                     </div>
-                <div class="detail__footer--money">配送费￥4</div>
+                <div class="detail__footer--money">配送费￥{{sellerInfo.userDistributionPay}}</div>
                 <div class="detail__footer--btn" v-bind:class="{active:isActive}" @click="toOrder()">选好了</div>
             </div>
 
@@ -102,7 +104,9 @@ export default {
             selectedFood:[],
             cartList:[],
             menuSortData:[],
-            menuDetailData:[]
+            menuDetailData:[],
+            sellerId:0,
+            sellerInfo:[]
         }
     },
     created() {
@@ -114,8 +118,12 @@ export default {
                 this._calculateHeight(); // 初始化列表高度列表
             })
         });
+
+        //取出上一个页面传过来的商家id
+        this.sellerId = this.$route.query.sellerId;
+        this.getSellerInfo();
         this.getMenuSort();
-//        this.getMenuDetail();
+        this.getMenuDetail();
     },
     props: {
         seller: Object
@@ -133,19 +141,25 @@ export default {
         }
     },
     methods: {
+        getSellerInfo(){
+            let _this = this;
+            $.get('/ssm/user/queryUserById',{userid:_this.sellerId}).then(function (sellerInfo) {
+                _this.sellerInfo = sellerInfo[0];
+                console.log(_this.sellerInfo,'=========sellerInfo========');
+            });
+        },
         getMenuSort(){
             let _this = this;
             $.get('/ssm/menusort/queryMenuSortAll').then(function (menuSortData) {
                 _this.menuSortData = menuSortData;
-                console.log(this.menuSortData,'=========menuSortData========');
+                console.log(_this.menuSortData,'=========menuSortData========');
             });
         },
         getMenuDetail(){
             let _this = this;
             $.get('/ssm/menudetail/queryMenuDetailAll').then(function (menuDetailData) {
                 _this.menuDetailData = menuDetailData;
-
-                console.log(this.menuDetailData,'=========menuDetailData=========');
+                console.log(_this.menuDetailData,'=========menuDetailData=========');
             });
         },
         onTabClick(index) {
