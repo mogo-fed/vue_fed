@@ -17,6 +17,7 @@ import TabbarHome from './components/users/home'
 import TabbarOrders from './components/users/orders'
 import TabbarUser from './components/users/user'
 import PageFromTabbar from './components/users/PageFromTabbar'
+import chooseAddrModal from './components/users/chooseAddrModal'
 
 import orderDetail from './components/users/orderDetail'
 
@@ -43,6 +44,7 @@ const routes = [
     { path: '/addMenuDetailModel', component: addMenuDetailModel },
     { path: '/addMyMenuDetailModal', component: addMyMenuDetailModal },
     { path: '/PageFromTabbar', component: PageFromTabbar },
+    { path: '/chooseAddrModal', component: chooseAddrModal },
 
     { path: '/users/orderDetail', component: orderDetail },
     { path: '/users/foodDetail', component: foodDetail },

@@ -3,8 +3,6 @@
       <div class="page-content" style="padding-bottom: 40px;padding-top: 54px;">
         <div class="text-center" v-if="show == 0">
             <div class="addSellerInfoPanl" v-show="addSellerInfoPanl">
-            
-            
                 <von-input type="text" v-model="username" placeholder="我的昵称" label="我的昵称" readonly></von-input>
                 <von-input type="text" v-model="usersellername" placeholder="我的商铺描述" label="我的商铺描述"></von-input>
                 <von-input type="text" v-model="usertel" placeholder="我的电话" label="商家电话"></von-input>
@@ -28,9 +26,7 @@
               <button class="button button-assertive button-block button-outline" @click="addMenuDetailBtn()">完善我的菜谱</button>
             </div>
 
-
         </div>
-
 
         <div class="text-center" v-if="show == 1">历史订单</div>
         <div class="text-center" v-if="show == 2">
@@ -75,8 +71,7 @@
         usertel:'',
         useradr:'',
         modal: undefined,
-        menuSortData:[],
-        
+        menuSortData:[]
       }
     },
     // computed: {
@@ -92,7 +87,6 @@
       window.vmm=this
     },
     methods: {
-      
 
       menuClicked(menuIndex) {
         this.show = menuIndex;
@@ -102,7 +96,6 @@
           $tabbar.$emit('updateTabbarBadge', menuIndex, this.menus[menuIndex].badge++);
         },
         addMenuSortBtn() {
-
             $modal.fromComponent(addMenuSortModal, {
                 title: '添加我的菜单分类面板',
                 theme: 'default',
@@ -183,14 +176,10 @@
             }).then((modal) => {
                 this.detailModal = modal;
                 var _this = this;
-
                 modal.content.$on('closeMenuDetailModal',function () {
-
                 });
                 this.detailModal.show();
             })
-
-
         }
     },
     beforeDestroy() {

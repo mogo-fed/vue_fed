@@ -2,13 +2,14 @@
     <div class="page has-navbar has-tabbar" v-nav="{title: '提交订单', showBackButton: true}">
         <div class="page-content" style="padding-top: 45px;height:100%;">
             <div class="cart__content">
-                <div class="cart__address" @click="$router.forward('../edit/EditAddress')">
+                <div class="cart__address" @click="showActionAddr">
                     <div>
                         <p>凯迪克大厦 16层蘑菇公寓</p>
                         <p>云老师 1856345345</p>
                     </div>
                     <div class="cart__address--icon"><span class="icon ion-ios-arrow-right"></span></div>
                 </div>
+
                 <item>
                     支付方式
                     <span class="item-note dark">在线支付</span>
@@ -78,20 +79,39 @@
 
 <script>
     import $ from 'jquery';
+    import chooseAddrModal from './chooseAddrModal'
     export default {
         data() {
             return {
                 personNumber: '以便商家给您带够餐具',
                 cartList: this.$route.query.cartList,
-
+                userid : localStorage.getItem('userid')
             }
         },
         created() {
             console.log(this.$route.query.cartList);
-
         },
         methods: {
+            showActionAddr(){
+                $modal.fromComponent(chooseAddrModal, {
+                    title: '选择收货地址',
+                    theme: 'default',
+                    onHide: () => {
+                        console.log('modal hide');
+                    }
+                }).then((modal) => {
+                    this.addrModal = modal;
+                    var _this = this;
+                    modal.content.$on('closeAddrModal',function () {
+                        //确定地址之后 回到订单页，显示地址
+                        _this.showMyAddr();
+                    });
+                    this.addrModal.show();
+                })
+            },
+            showMyAddr(){
 
+            },
             //下拉选择人数
             showActionSheet(theme) {
                 $actionSheet.show({
@@ -100,23 +120,18 @@
                     buttons: {
                         '1人': () => {
                             this.personNumber = '1人';
-                            console.log('action 1 called.')
                         },
                         '2人': () => {
                             this.personNumber = '2人';
-                            console.log('action 2 called.')
                         },
                         '3人': () => {
                             this.personNumber = '3人';
-                            console.log('action 3 called.')
                         },
                         '4人': () => {
                             this.personNumber = '4人';
-                            console.log('action 4 called.')
                         },
                         '最多5人': () => {
                             this.personNumber = '5人';
-                            console.log('action 5 called.')
                         }
                     }
                 })
@@ -128,13 +143,9 @@
                 } else {
                     this.cartList[index].foodnumber = 1;
                     $dialog.confirm({
-                        // 设置为ios样式
                         theme: 'ios',
-                        // 标题
                         title: '您确定要移除这个菜吗？',
-                        // 取消按钮文本
                         cancelText: '取消',
-                        // 确定按钮文本
                         okText: '确定'
                     }).then((res) => {
                         this.cartList.splice(index, 1);
@@ -150,8 +161,7 @@
             },
             //提交
             submitOrder(){
-                $toast.show('支付成功', 3000).then(() => {
-                    console.log('toast hide');
+                $toast.show('支付成功', 2000).then(() => {
                     $router.push({path:'orderDetail',query:{cartList:this.cartList,totalnum:this.total,totalmoney:this.totalMoney,personNumber:this.personNumber}});
                 })
             }
@@ -172,7 +182,11 @@
                 });
                 return money + 4;
             }
-
+        },
+        destroyed() {
+            if (this.addrModal)
+                $modal.destroy(this.addrModal);
+            window.MultiModal = undefined;
         }
     }
 </script>

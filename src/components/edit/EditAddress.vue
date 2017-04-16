@@ -8,9 +8,12 @@
       </list>
 
       <list v-show="userAddressAllInfo.length!=0" v-for="item in userAddressAllInfo">
-        <item @click.native="editMyAddr" v-bind:data-addrid='item.receiverAddressId'>
           <item>
             {{item.receiverAddressUseradr}}
+            <span class="item-note">
+              <button class="button button-assertive button-outline"  @click="editMyAddr" v-bind:data-addrid='item.receiverAddressId'
+                      style="line-height: 26px!important;min-height: 0px!important;">编辑</button>
+            </span>
           </item>
           <item>
             {{item.receiverAddressUserName}}
@@ -18,7 +21,6 @@
               {{item.receiverAddressUsertel}}
             </span>
           </item>
-        </item>
       </list>
 
     <item class="bottomBtn" @click.native="$router.forward('/edit/AddNewAddress')">
@@ -32,7 +34,6 @@
   import $ from 'jquery';
   export default{
     data() {
-
       return {
         userAddressAllInfo:[],
         userid : localStorage.getItem('userid')
@@ -44,7 +45,7 @@
       methods:{
           getUserAddressAll(){
               let _this = this;
-              $.get('//ssm/address/queryAddressAll',{userid:this.userid}).then( function (data) {
+              $.get('/ssm/address/queryAddressAll',{userid:this.userid}).then( function (data) {
                   _this.userAddressAllInfo = data;
                   console.log(_this.userAddressAllInfo,'queryAddressAll');
               } );
@@ -54,6 +55,10 @@
               console.log(addrid,'addrid');
               console.log(this,'0000');
               $router.push({path:'/edit/EditMyAddress',query:{addrid:addrid}});
+          },
+          myChooseAddr(){
+              //代表选中改地址，返回到订单页
+              console.log(99)
           }
       }
   }
