@@ -1,5 +1,5 @@
 <template>
-    <div class="page has-navbar has-tabbar" v-nav="{title: '提交订单', showBackButton: true}">
+    <div class="page has-navbar has-tabbar" v-nav="{title: '我的购物车', showBackButton: true}">
         <div class="page-content" style="padding-top: 45px;height:100%;">
             <div class="cart__content">
                 <div class="cart__address" @click="showActionAddr">

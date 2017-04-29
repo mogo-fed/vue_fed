@@ -9,7 +9,7 @@
                     <div class="detail__top--right">
                         <div class="detail__top--title">{{sellerInfo.userSellerName}}</div>
                         <div class="detail__top--remark">月销量：103笔</div>
-                        <div class="detail__top--remark"><span><i class="demo-icon icon-location"></i>1.6km</span><span>￥{{sellerInfo.userSendPay}}元起送</span></div>
+                        <div class="detail__top--remark"><span><i class="demo-icon icon-location"></i>1.6km</span><span>￥4{{sellerInfo.userSendPay}}元起送</span></div>
                     </div>
                 </div>
             </div>
@@ -21,8 +21,8 @@
                     <!--列表了-->
                     <div class="detail__menu--title menu-wrapper" ref="menuWrapper">
                         <ul>
-                            <li v-for="(item,index) in menuSortData" @click="menuClick(index,$event)" :data-msId="item.msId"
-                                :class="index==menuCurrentIndex?'menu-item-selected':'menu-item'"> {{item.msName}}</li>
+                            <li v-for="(item,index) in goods" @click="menuClick(index,$event)" :data-msId="item.msId"
+                                :class="index==menuCurrentIndex?'menu-item-selected':'menu-item'"> {{item.name}}</li>
                         </ul>
                     </div>
                     <div class="detail__menu--con" id="wrapper" ref="foodsWrapper">
@@ -78,7 +78,7 @@
                             </span>
                         </div>
                     </div>
-                <div class="detail__footer--money">配送费￥{{sellerInfo.userDistributionPay}}</div>
+                <div class="detail__footer--money">配送费￥6{{sellerInfo.userDistributionPay}}</div>
                 <div class="detail__footer--btn" v-bind:class="{active:isActive}" @click="toOrder()">选好了</div>
             </div>
 
