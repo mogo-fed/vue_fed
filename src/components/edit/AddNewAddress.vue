@@ -33,7 +33,7 @@
                   receiver_address_useradr:this.receiver_address_useradr,
                   receiver_address_usertel:this.receiver_address_usertel
               }
-              $.get('//ssm/address/addAddress',info).then(function (data) {
+              $.post('/ssm/address/addAddress',info).then(function (data) {
                   console.log(data,'saveadr--success');
                   if(data == 1){
                       $toast.show('新增地址成功！');

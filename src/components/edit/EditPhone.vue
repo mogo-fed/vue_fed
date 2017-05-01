@@ -34,7 +34,7 @@
                   username:this.username,
                   usertel:this.newphone
               }
-              $.get('/ssm/user/updateUserTel',info).then(function (data) {
+              $.post('/ssm/user/updateUserTel',info).then(function (data) {
                   console.log(data,'savetel');
                   if(data == 1){
                       $toast.show('修改手机号成功！');

@@ -39,7 +39,7 @@
         methods:{
             selectMenuSort(){
                 var _this  = this;
-                $.get('/ssm/menusort/queryMenuSortAll').then(function (menusort) {
+                $.post('/ssm/menusort/queryMenuSortAll').then(function (menusort) {
                     console.log(menusort);
                     _this.menusort.push(...menusort);
                 });
@@ -50,7 +50,7 @@
                 var _this  = this;
                 let msid = $(event.currentTarget).data('msid');
 //                console.log(msid);
-                $.get('/ssm/menudetail/queryMdByMsId',{msId:msid}).then(function (menudetail) {
+                $.post('/ssm/menudetail/queryMdByMsId',{msId:msid}).then(function (menudetail) {
 //                    console.warn(menudetail);
                     _this.menudetail = menudetail;
                 });

@@ -35,7 +35,7 @@
                   receiver_address_useradr:this.receiver_address_useradr,
                   receiver_address_usertel:this.receiver_address_usertel
               }
-              $.get('/ssm/address/updateAddress',info).then(function (data) {
+              $.post('/ssm/address/updateAddress',info).then(function (data) {
                   console.log(data,'saveadr--success');
                   if(data == 1){
                       $toast.show('修改地址成功！');

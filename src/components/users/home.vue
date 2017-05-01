@@ -125,7 +125,7 @@ export default {
             },
             getUserAll() {
                 let _this = this;
-                $.get('/ssm/user/queryUserAll').then(function(sellerAllInfo) {
+                $.post('/ssm/user/queryUserAll').then(function(sellerAllInfo) {
                     _this.sellerAllInfo = sellerAllInfo;
                     console.log(sellerAllInfo,'=======sellerAllInfo=======');
                 });

@@ -48,7 +48,7 @@
       methods: {
           getUserAddressAll(){
               let _this = this;
-              $.get('/ssm/address/queryAddressAll',{userid:this.userid}).then( function (data) {
+              $.post('/ssm/address/queryAddressAll',{userid:this.userid}).then( function (data) {
                   _this.userAddressAllInfo = data;
                   console.log(_this.userAddressAllInfo,'queryAddressAll');
               } );

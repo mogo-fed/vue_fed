@@ -38,7 +38,7 @@
       methods: {
           getUserAll(){
               var _this  = this;
-              $.get('/ssm/user/queryUserAll').then(function (data) {
+              $.post('/ssm/user/queryUserAll').then(function (data) {
                   console.log(data);
                  _this.data.push(...data);
 

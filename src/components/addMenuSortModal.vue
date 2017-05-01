@@ -37,7 +37,7 @@
           },
           addMenuSortBtn(){
               var _this  = this;
-              $.get('/ssm/menusort/addMenuSort',{msName:_this.menusort}).then(function (data) {
+              $.post('/ssm/menusort/addMenuSort',{msName:_this.menusort}).then(function (data) {
                   $toast.show('添加分类成功');
                   _this.$emit('closeMenuSortModal',1);
               });

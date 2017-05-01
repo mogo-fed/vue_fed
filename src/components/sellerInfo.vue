@@ -122,7 +122,7 @@
               useradr:this.useradr,
               usertype:localStorage.getItem('usertype')
           }
-            $.get('/ssm/user/updateUser',updateInfo).then(function (updateUserData) {
+            $.post('/ssm/user/updateUser',updateInfo).then(function (updateUserData) {
                 $toast.show('基本信息保存成功,请完善菜单分类');
 //                $('.page-content').css('paddingTop','40px');
                 _this.selectMenuSortAll();
@@ -136,7 +136,7 @@
         //TODO:某种情况 切换tab之后，在第一个页面中出现两次重复数据，原因：第一次请求数据没有清空，需要知道切换的事件。
         selectMenuSortAll(){
             var _this = this;
-            $.get('/ssm/menusort/queryMenuSortAll').then(function (menuSortData) {
+            $.post('/ssm/menusort/queryMenuSortAll').then(function (menuSortData) {
                if(menuSortData.length != 0){
                    _this.addMenuSortPanl = true;
                }else {
@@ -154,7 +154,7 @@
                 userpwd:localStorage.getItem('userpwd'),
                 usertype:localStorage.getItem('usertype')
             };
-            $.get('/ssm/user/queryByName',sellerInfo).then(function (sellerInfo) {
+            $.post('/ssm/user/queryByName',sellerInfo).then(function (sellerInfo) {
                 console.log(sellerInfo,'sellerInfo');
                 if(sellerInfo.userTel){
                     //完善过信息，直接跳转至添加菜单页

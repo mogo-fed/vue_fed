@@ -9,7 +9,7 @@
                     <div class="detail__top--right">
                         <div class="detail__top--title">{{sellerInfo.userSellerName}}</div>
                         <div class="detail__top--remark">月销量：103笔</div>
-                        <div class="detail__top--remark"><span><i class="demo-icon icon-location"></i>1.6km</span><span>￥4{{sellerInfo.userSendPay}}元起送</span></div>
+                        <div class="detail__top--remark"><span><i class="demo-icon icon-location"></i>1.6km</span><span>￥{{sellerInfo.userSendPay}}元起送</span></div>
                     </div>
                 </div>
             </div>
@@ -21,28 +21,32 @@
                     <!--列表了-->
                     <div class="detail__menu--title menu-wrapper" ref="menuWrapper">
                         <ul>
-                            <li v-for="(item,index) in goods" @click="menuClick(index,$event)" :data-msId="item.msId"
-                                :class="index==menuCurrentIndex?'menu-item-selected':'menu-item'"> {{item.name}}</li>
+                            <li v-for="(item,index) in sortDetailData" @click="menuClick(index,$event)" :data-msId="item.msId"
+                                :class="index==menuCurrentIndex?'menu-item-selected':'menu-item'"> {{item.msName}}</li>
                         </ul>
                     </div>
                     <div class="detail__menu--con" id="wrapper" ref="foodsWrapper">
                         <ul>
-                            <li v-for="(item,indexClass) in goods" class="food-list food-list-hook">
-                                <h1>{{item.name}}</h1>
+                            <li v-for="(item,indexClass) in sortDetailData" class="food-list food-list-hook">
+                                <h1>{{item.msName}}</h1>
                                 <ul>
-                                    <li v-for="(food,index) in item.foods"  @click="menuChoose(indexClass,index,food)"
+                                    <li v-for="(food,index) in item.menuDetail"  @click="menuChoose(indexClass,index,food)"
                                         :class="selectedFood.indexOf(indexClass+''+index) > -1?'food-item choose':'food-item'"
-                                        :data-name="food.name" :data-price="food.price">
-                                        <div class="icon"><img width="57" height="57" :src="food.icon" /></div>
+                                        :data-name="food.mdName" :data-price="food.mdNowprice">
+                                        <div class="icon"><img width="57" height="57" :src="food.mdImg" /></div>
                                         <div class="content">
-                                            <h2>{{food.name}}</h2>
+                                            <h2>{{food.mdName}}</h2>
                                             <div class="sell-info">
-                                                <span class="sellCount">月售{{food.sellCount}}份</span>
-                                                <span class="rating">好评率{{food.rating}}%</span>
+
+                                                <span class="sellCount" v-show="food.mdMonthsale!=null">月售{{food.mdMonthsale}}份</span>
+                                                <span class="sellCount" v-show="food.mdMonthsale==null">月售0份</span>
+
+                                                <span class="rating" v-show="food.mdPraise!=null">好评率{{food.mdPraise}}%</span>
+                                                <span class="rating" v-show="food.mdPraise==null">好评率0%</span>
                                             </div>
                                             <div class="price">
-                                                <span class="newPrice"><span class="unit">￥</span>{{food.price}}</span>
-                                                <span v-show="food.oldPrice" class="oldPrice">￥{{food.oldPrice}}</span>
+                                                <span class="newPrice"><span class="unit">￥</span>{{food.mdNowprice}}</span>
+                                                <span v-show="food.oldPrice" class="oldPrice">￥{{food.mdPreprice}}</span>
                                             </div>
                                         </div>
                                     </li>
@@ -78,7 +82,7 @@
                             </span>
                         </div>
                     </div>
-                <div class="detail__footer--money">配送费￥6{{sellerInfo.userDistributionPay}}</div>
+                <div class="detail__footer--money">配送费￥{{sellerInfo.userDistributionPay}}</div>
                 <div class="detail__footer--btn" v-bind:class="{active:isActive}" @click="toOrder()">选好了</div>
             </div>
 
@@ -103,27 +107,27 @@ export default {
             isActive:false,
             selectedFood:[],
             cartList:[],
-            menuSortData:[],
-            menuDetailData:[],
+            sortDetailData:[],
             sellerId:0,
             sellerInfo:[]
         }
     },
     created() {
-        $.get('data.json').then((res) => {
+       /* $.get('data.json').then((res) => {
             this.goods = res.goods;
             console.log(res.goods,'=======res.goods===========');
             this.$nextTick(() => {
                 this._initScroll(); // 初始化scroll
                 this._calculateHeight(); // 初始化列表高度列表
             })
-        });
+        });*/
 
         //取出上一个页面传过来的商家id
         this.sellerId = this.$route.query.sellerId;
+        //获取商家基本信息
         this.getSellerInfo();
-        this.getMenuSort();
-        this.getMenuDetail();
+        //获取商家所有菜品信息
+        this.getMenuSortDetail();
     },
     props: {
         seller: Object
@@ -143,23 +147,16 @@ export default {
     methods: {
         getSellerInfo(){
             let _this = this;
-            $.get('/ssm/user/queryUserById',{userid:_this.sellerId}).then(function (sellerInfo) {
+            $.post('/ssm/user/queryUserById',{userid:_this.sellerId}).then(function (sellerInfo) {
                 _this.sellerInfo = sellerInfo[0];
                 console.log(_this.sellerInfo,'=========sellerInfo========');
             });
         },
-        getMenuSort(){
+        getMenuSortDetail(){
             let _this = this;
-            $.get('/ssm/menusort/queryMenuSortAll').then(function (menuSortData) {
-                _this.menuSortData = menuSortData;
-                console.log(_this.menuSortData,'=========menuSortData========');
-            });
-        },
-        getMenuDetail(){
-            let _this = this;
-            $.get('/ssm/menudetail/queryMenuDetailAll').then(function (menuDetailData) {
-                _this.menuDetailData = menuDetailData;
-                console.log(_this.menuDetailData,'=========menuDetailData=========');
+            $.post('/ssm/menusortdetail/queryMenuSortDetail',{userid:_this.sellerId}).then(function (sortDetailData) {
+                _this.sortDetailData = sortDetailData;
+                console.log(_this.sortDetailData,'=========sortDetailData========');
             });
         },
         onTabClick(index) {
@@ -213,7 +210,7 @@ export default {
 
             this.selectedFood.sort();
             this.cartList.sort();
-            console.log(this.cartList);
+            console.log(this.cartList,'=================cartList===============');
             if(this.selectedFood.length>0){
                 this.isActive=true;
             }else{
