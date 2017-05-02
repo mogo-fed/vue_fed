@@ -38,7 +38,7 @@
               }
               $.get('/ssm/user/updateUserPwd',info).then(function (data) {
                   console.log(data,'savepwd');
-                  if(data == 2){
+                  if(data == 1){
                       $toast.show('修改密码成功！');
                       console.log(info.usertel,'tel222222');
                       localStorage.setItem('userpwd',info.userpwd);

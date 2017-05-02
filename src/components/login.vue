@@ -46,11 +46,12 @@
         login(){
             var _this = this;
             $.post('/ssm/user/queryByName',{username:this.username,userpwd:this.userpwd,usertype:this.usertype}).then( function (data) {
-                console.log(data,'===================');
+                console.log(data,'=======queryByName============');
                 if (data){  //查询成功
                     localStorage.setItem('username',data.userName);
                     localStorage.setItem('userpwd',data.userPwd);
                     localStorage.setItem('usertype',data.userType);
+                    localStorage.setItem('usertel',data.userTel);
                     localStorage.setItem('userid',data.userId);
                     if(_this.usertype == 0){  //普通用户，跳转至商家列表 home
                         $router.replace('/users/home');

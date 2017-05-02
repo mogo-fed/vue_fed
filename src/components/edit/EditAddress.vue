@@ -43,6 +43,9 @@
           this.getUserAddressAll();
       },
       methods:{
+          onBackButtonClick(){
+//              $app.$router.back('./users/user');
+          },
           getUserAddressAll(){
               let _this = this;
               $.post('/ssm/address/queryAddressAll',{userid:this.userid}).then( function (data) {
@@ -55,10 +58,6 @@
               console.log(addrid,'addrid');
               console.log(this,'0000');
               $router.push({path:'/edit/EditMyAddress',query:{addrid:addrid}});
-          },
-          myChooseAddr(){
-              //代表选中改地址，返回到订单页
-              console.log(99)
           }
       }
   }

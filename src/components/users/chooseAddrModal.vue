@@ -9,12 +9,9 @@
       </list>
 
       <list v-show="userAddressAllInfo.length!=0" v-for="item in userAddressAllInfo">
-        <item>
+        <item @click.native="myChooseAddr" v-bind:data-addr='item.receiverAddressUseradr'
+              v-bind:data-name='item.receiverAddressUserName' v-bind:data-tel='item.receiverAddressUsertel'>
           {{item.receiverAddressUseradr}}
-          <span class="item-note">
-              <button class="button button-assertive button-outline"  @click="editMyAddr" v-bind:data-addrid='item.receiverAddressId'
-                      style="line-height: 26px!important;min-height: 0px!important;">编辑</button>
-            </span>
         </item>
         <item>
           {{item.receiverAddressUserName}}
@@ -23,10 +20,6 @@
             </span>
         </item>
       </list>
-
-      <item class="bottomBtn" @click.native="$router.forward('/edit/AddNewAddress')">
-        <button class="button button-light button-full" style="margin-bottom: 0px;margin-top:0px;">新增收获地址</button>
-      </item>
 
     </div>
   </div>
@@ -40,31 +33,35 @@
           userid : localStorage.getItem('userid')
       }
     },
-      create(){
-          this.getUserAddressAll();
-          console.log('------------------------');
-          alert(0)
-      },
-      methods: {
-          getUserAddressAll(){
-              let _this = this;
-              $.post('/ssm/address/queryAddressAll',{userid:this.userid}).then( function (data) {
-                  _this.userAddressAllInfo = data;
-                  console.log(_this.userAddressAllInfo,'queryAddressAll');
-              } );
-          }
-      }
+    create(){
+
+    },
+    methods: {
+        getAddressAll(){
+            let _this = this;
+            $.post('/ssm/address/queryAddressAll',{userid:this.userid}).then( function (data) {
+                _this.userAddressAllInfo = data;
+                console.log(_this.userAddressAllInfo,'--------queryAddressAll====');
+            } );
+        },
+        myChooseAddr(){
+            let _this = this;
+            let addr = $(event.currentTarget).data('addr');
+            let name = $(event.currentTarget).data('name');
+            let tel = $(event.currentTarget).data('tel');
+            let info = {
+                addr:addr,
+                name:name,
+                tel:tel
+            }
+            console.log(JSON.stringify(info));
+            //代表选中改地址后关闭模态框，返回到订单页
+            _this.$emit('closeAddrModal',info);
+
+        }
+    }
+
 
 
   }
 </script>
-
-<style scoped>
-  .bottomBtn{
-    padding: 0px;
-    width: 100%;
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-  }
-</style>

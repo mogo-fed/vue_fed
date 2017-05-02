@@ -7,6 +7,12 @@
                 <von-input type="text" v-model="usersellername" placeholder="我的商铺描述" label="我的商铺描述"></von-input>
                 <von-input type="text" v-model="usertel" placeholder="我的电话" label="商家电话"></von-input>
                 <von-input type="text" v-model="useradr" placeholder="我的地址" label="商家地址"></von-input>
+                <von-input type="text" v-model="usersendpay" placeholder="起送费" label="起送费"></von-input>
+                <von-input type="text" v-model="userdistributionpay" placeholder="配送费" label="配送费"></von-input>
+                <label class="fileBtn"><span>商家头像</span><input type="file" name="" v-on:change="fileChange"></label>
+
+                <img class="img" :src="useravatar" width="50%">
+
                 <div class="padding saveMyInfoBtn">
                     <button class="button button-positive button-block loginBtn" @click="saveMyInfo">完善我的基本信息</button>
                 </div>
@@ -70,6 +76,9 @@
         accordion:false,
         usertel:'',
         useradr:'',
+        usersendpay:'',
+        useravatar: null,
+        userdistributionpay:'',
         modal: undefined,
         menuSortData:[]
       }
@@ -87,7 +96,24 @@
       window.vmm=this
     },
     methods: {
+        fileChange(){
+            let oFReader = new FileReader(),
+                rFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
 
+            oFReader.onload=oFREvent=>{
+                this.useravatar=oFREvent.target.result;
+                //console.log(this.base64Img)
+            }
+
+            function loadImageFile() {
+                if (event.target.files.length === 0) { return; }
+                var oFile = event.target.files[0];
+                if (!rFilter.test(oFile.type)) { alert("You must select a valid image file!"); return; }
+                oFReader.readAsDataURL(oFile,0.2);//压缩图片质量0～1
+                // console.log(base64)
+            }
+            loadImageFile();
+        },
       menuClicked(menuIndex) {
         this.show = menuIndex;
         $app.setTitle(this.menus[this.show].text);
@@ -120,7 +146,10 @@
               usersellername:this.usersellername,
               usertel:this.usertel,
               useradr:this.useradr,
-              usertype:localStorage.getItem('usertype')
+              usertype:localStorage.getItem('usertype'),
+              usersendpay:this.usersendpay,
+              userdistributionpay:this.userdistributionpay,
+              useravatar:this.useravatar
           }
             $.post('/ssm/user/updateUser',updateInfo).then(function (updateUserData) {
                 $toast.show('基本信息保存成功,请完善菜单分类');
@@ -136,7 +165,7 @@
         //TODO:某种情况 切换tab之后，在第一个页面中出现两次重复数据，原因：第一次请求数据没有清空，需要知道切换的事件。
         selectMenuSortAll(){
             var _this = this;
-            $.post('/ssm/menusort/queryMenuSortAll').then(function (menuSortData) {
+            $.post('/ssm/menusort/queryMenuSortAll',{sellerId:localStorage.getItem('userid')}).then(function (menuSortData) {
                if(menuSortData.length != 0){
                    _this.addMenuSortPanl = true;
                }else {
@@ -155,7 +184,7 @@
                 usertype:localStorage.getItem('usertype')
             };
             $.post('/ssm/user/queryByName',sellerInfo).then(function (sellerInfo) {
-                console.log(sellerInfo,'sellerInfo');
+                console.log(sellerInfo,'=======sellerInfo');
                 if(sellerInfo.userTel){
                     //完善过信息，直接跳转至添加菜单页
                     _this.selectMenuSortAll();
@@ -220,7 +249,10 @@
         height: 30px;
         margin-bottom: 6px;
     }
-
+    .fileBtn{background: #fff;height: 50px;border: none;width: 100%;display: block;position: relative;}
+    .fileBtn input{visibility: hidden;width: 100%;display: block;height: 50px;}
+    .fileBtn span{position: absolute;left: 12px;bottom: 12px;padding-left: 35px;}
+    .img{display: block;margin: 10px auto;}
 
 </style>
 

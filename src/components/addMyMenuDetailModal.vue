@@ -42,23 +42,22 @@
       },
       methods: {
         fileChange(){
+          let oFReader = new FileReader(),
+               rFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
 
-        let oFReader = new FileReader(), 
-             rFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
+            oFReader.onload=oFREvent=>{
+              this.mdimg=oFREvent.target.result;
+              //console.log(this.base64Img)
+            }
 
-          oFReader.onload=oFREvent=>{
-            this.mdimg=oFREvent.target.result;
-            //console.log(this.base64Img)
+          function loadImageFile() {
+            if (event.target.files.length === 0) { return; }
+            var oFile = event.target.files[0];
+            if (!rFilter.test(oFile.type)) { alert("You must select a valid image file!"); return; }
+            oFReader.readAsDataURL(oFile,0.2);//压缩图片质量0～1
+           // console.log(base64)
           }
-
-        function loadImageFile() {
-          if (event.target.files.length === 0) { return; }
-          var oFile = event.target.files[0];
-          if (!rFilter.test(oFile.type)) { alert("You must select a valid image file!"); return; }
-          oFReader.readAsDataURL(oFile,0.2);//压缩图片质量0～1
-         // console.log(base64)
-        }
-        loadImageFile();
+          loadImageFile();
       },
         //确定添加分类的弹窗
           showChoose() {
@@ -80,7 +79,7 @@
           addMyMenuDetail(){
               console.log(this,'999999');
               let addMenuDetailParms = {
-                  msId:this.msidaa,
+                  msId:this.msid,
                   mdName: this.mdname,
                   mdNowprice: this.mdnowprice,
                   mdImg: this.mdimg,

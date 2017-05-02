@@ -39,7 +39,7 @@
         methods:{
             selectMenuSort(){
                 var _this  = this;
-                $.post('/ssm/menusort/queryMenuSortAll').then(function (menusort) {
+                $.post('/ssm/menusort/queryMenuSortAll',{sellerId:localStorage.getItem('userid')}).then(function (menusort) {
                     console.log(menusort);
                     _this.menusort.push(...menusort);
                 });
@@ -66,7 +66,7 @@
                         console.log('modal hide');
                     }
                 }).then((modal) => {
-                    modal.content.msidaa = msid;
+                    modal.content.msid = msid;
                     modal.content.$on('closeMyMenuDetailModal',function () {
                         modal.hide();
                         _this.selectMenuDetail();

@@ -1,5 +1,5 @@
 <template>
-  <div class="page has-navbar has-tabbar"  v-nav="{title: '订单详情', showBackButton: true}">
+  <div class="page has-navbar has-tabbar"  v-nav="{title: '订单详情', showBackButton: true,onBackButtonClick}">
     <div class="page-content" style="padding-top: 45px;height:100%;">
       <div class="cart__content">
         <!-- 订单已完成 -->
@@ -99,8 +99,10 @@
             console.log(this.$route.query.cartList);
         },
         methods: {
-
-
+            onBackButtonClick(){
+                console.log('=====onBackButtonClick=====')
+                $app.$router.back('./home');
+            }
         },
         computed:{
         }

@@ -1,11 +1,16 @@
 <template>
-    <div class="page has-navbar has-tabbar" v-nav="{title: '我的购物车', showBackButton: true}">
+    <div class="page has-navbar has-tabbar" v-nav="{title: '我的购物车', showBackButton: true,onBackButtonClick}">
         <div class="page-content" style="padding-top: 45px;height:100%;">
             <div class="cart__content">
                 <div class="cart__address" @click="showActionAddr">
-                    <div>
-                        <p>凯迪克大厦 16层蘑菇公寓</p>
-                        <p>云老师 1856345345</p>
+
+                    <div v-show="!chooseAddrInfo.name" style="padding: 6px 0 13px;">
+                        点击选择收货地址~
+                    </div>
+
+                    <div v-show="chooseAddrInfo.name">
+                        <p>{{chooseAddrInfo.addr}}</p>
+                        <p>{{chooseAddrInfo.name}}   {{chooseAddrInfo.tel}}</p>
                     </div>
                     <div class="cart__address--icon"><span class="icon ion-ios-arrow-right"></span></div>
                 </div>
@@ -83,6 +88,7 @@
     export default {
         data() {
             return {
+                chooseAddrInfo:{},
                 personNumber: '以便商家给您带够餐具',
                 cartList: this.$route.query.cartList,
                 userid : localStorage.getItem('userid')
@@ -92,6 +98,9 @@
             console.log(this.$route.query.cartList);
         },
         methods: {
+            onBackButtonClick(){
+                $app.$router.back('./home');
+            },
             showActionAddr(){
                 $modal.fromComponent(chooseAddrModal, {
                     title: '选择收货地址',
@@ -102,15 +111,19 @@
                 }).then((modal) => {
                     this.addrModal = modal;
                     var _this = this;
-                    modal.content.$on('closeAddrModal',function () {
+                    modal.content.$on('closeAddrModal',function (chooseAddrInfo) {
                         //确定地址之后 回到订单页，显示地址
-                        _this.showMyAddr();
+                        modal.hide();
+                        _this.showMyAddr(chooseAddrInfo);
                     });
-                    this.addrModal.show();
+                    modal.show();
+                    modal.content.getAddressAll();
                 })
             },
-            showMyAddr(){
-
+            //选中的地址信息
+            showMyAddr(chooseAddrInfo){
+                this.chooseAddrInfo = chooseAddrInfo;
+                console.log(this.chooseAddrInfo,'========chooseAddrInfo========');
             },
             //下拉选择人数
             showActionSheet(theme) {

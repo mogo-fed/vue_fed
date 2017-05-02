@@ -85,7 +85,7 @@
             <div class="seller_list">
                 <item @click.native="toFoodDetail" v-for="item in sellerAllInfo" :data-sellerId="item.userId">
                     <div class="left seller_list_divimg">
-                        <img src="src/static/images/seller1.jpg" alt="商家图片">
+                        <img :src='item.userAvatar' alt="商家图片">
                     </div>
                     <div class="seller_list_info">
                         <p class="seller-title">{{item.userSellerName}}<span class="right">88km</span></p>

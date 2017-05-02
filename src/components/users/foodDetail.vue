@@ -28,7 +28,7 @@
                     <div class="detail__menu--con" id="wrapper" ref="foodsWrapper">
                         <ul>
                             <li v-for="(item,indexClass) in sortDetailData" class="food-list food-list-hook">
-                                <h1>{{item.msName}}</h1>
+                                <h1 style="margin-bottom: 0px;">{{item.msName}}</h1>
                                 <ul>
                                     <li v-for="(food,index) in item.menuDetail"  @click="menuChoose(indexClass,index,food)"
                                         :class="selectedFood.indexOf(indexClass+''+index) > -1?'food-item choose':'food-item'"
@@ -102,7 +102,7 @@ export default {
             ],
             tabIndex: 0,
             goods: [],
-            listHeight: [],
+            listHeight: [0],
             foodsScrollY: 0,
             isActive:false,
             selectedFood:[],
@@ -150,6 +150,12 @@ export default {
             $.post('/ssm/user/queryUserById',{userid:_this.sellerId}).then(function (sellerInfo) {
                 _this.sellerInfo = sellerInfo[0];
                 console.log(_this.sellerInfo,'=========sellerInfo========');
+
+                _this.$nextTick(() => {
+                    //_this._initScroll(); // 初始化scroll
+                   // _this._calculateHeight(); // 初始化列表高度列表
+                })
+
             });
         },
         getMenuSortDetail(){
@@ -157,6 +163,11 @@ export default {
             $.post('/ssm/menusortdetail/queryMenuSortDetail',{userid:_this.sellerId}).then(function (sortDetailData) {
                 _this.sortDetailData = sortDetailData;
                 console.log(_this.sortDetailData,'=========sortDetailData========');
+
+                _this.$nextTick(() => {
+                    _this._initScroll(); // 初始化scroll
+                    _this._calculateHeight(); // 初始化列表高度列表
+                })
             });
         },
         onTabClick(index) {
@@ -179,7 +190,7 @@ export default {
         _calculateHeight() {
             let foodList = this.$refs.foodsWrapper.querySelectorAll('.food-list-hook');
             let height = 0;
-            this.listHeight.push(height);
+            //this.listHeight.push(height);
             for (let i = 0, l = foodList.length; i < l; i++) {
                 let item = foodList[i];
                 height += item.clientHeight;
@@ -190,11 +201,12 @@ export default {
             if (!event._constructed) {
                 return;
             }
-            this.foodsScroll.scrollTo(0, -this.listHeight[index], 300)
+            this.foodsScroll.scrollTo(0, -this.listHeight[index], 300);
         },
         menuChoose(indexClass,i, food){
             let s=indexClass+''+i;
             let index = this.selectedFood.indexOf(s);
+            console.log(index);
             let chooseFood={
                 foodname:$(event.currentTarget).data('name'),
                 foodprice:$(event.currentTarget).data('price'),
@@ -207,6 +219,7 @@ export default {
                 this.selectedFood.splice(index, 1);
                 this.cartList.splice(index, 1);
             }
+            console.log(this.selectedFood,'-0000');
 
             this.selectedFood.sort();
             this.cartList.sort();
@@ -352,8 +365,8 @@ export default {
     display: flex;
     justify-content: flex-start;
     flex-wrap: nowrap;
-    margin:5px 0;
-    padding:5px 0;
+    padding:10px 10px;
+
 }
 .food-item.choose {
     background:#fcf8e8;

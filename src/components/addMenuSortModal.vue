@@ -13,7 +13,8 @@
   export default{
     data() {
       return {
-          menusort: ''
+          menusort: '',
+          sellerId:localStorage.getItem('userid')
       }
     },
       methods: {
@@ -37,7 +38,7 @@
           },
           addMenuSortBtn(){
               var _this  = this;
-              $.post('/ssm/menusort/addMenuSort',{msName:_this.menusort}).then(function (data) {
+              $.post('/ssm/menusort/addMenuSort',{msName:_this.menusort,sellerId:_this.sellerId}).then(function (data) {
                   $toast.show('添加分类成功');
                   _this.$emit('closeMenuSortModal',1);
               });
