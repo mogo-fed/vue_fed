@@ -96,7 +96,7 @@
             }
         },
         created() {
-            console.log(this.$route.query.cartList);
+            console.log(this.$route.query.cartList,'cartList============');
         },
         methods: {
             onBackButtonClick(){

@@ -174,28 +174,31 @@
             },
             //提交
             submitOrder(){
+
+                //order/addOrder
+                //userid, sellerid, mdids, order_create_time, order_number
+
                 let _this = this;
-                console.log(_this.cartList,'========cartList=======');
+                var params={
+                    userid:localStorage.userid,
+                    sellerid:localStorage.sellerid,
+                    mdids:[]
+                }
+                this.cartList.forEach(function(item) {
+                    console.log(item,'---------item');
+                    params.mdids.push(item.foodmdid+'-'+item.foodnumber);
+                });
+                params.mdids = params.mdids.join('_');
+                console.log(params.mdids,'=========params.mdids');
+                $.post('/ssm/order/addOrder',params).then(function (data) {
+                    $toast.show('支付成功', 500).then(() => {
+                        $router.push({
+                            path:'orderDetail',
+                            query:{cartList:_this.cartList,totalnum:_this.total,totalmoney:_this.totalMoney,personNumber:_this.personNumber}
+                        });
+                    })
+                });
 
-                let order_number = '';
-
-                let orderInfo = {
-                    userid:localStorage.getItem('userid'),
-                    sellerid:localStorage.getItem('sellerid')
-                };
-                /*$.post('/ssm/order/addOrder',orderInfo).then(function(sellerAllInfo) {
-                    _this.sellerAllInfo = sellerAllInfo;
-                    console.log(sellerAllInfo,'=======sellerAllInfo=======');
-                });*/
-
-
-
-                $toast.show('支付成功', 2000).then(() => {
-                    $router.push({
-                        path:'orderDetail',
-                        query:{cartList:this.cartList,totalnum:this.total,totalmoney:this.totalMoney,personNumber:this.personNumber}
-                    });
-                })
             }
         },
         computed: {
