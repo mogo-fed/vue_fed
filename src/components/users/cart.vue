@@ -35,7 +35,7 @@
                     </item>
                     <ul>
                         <li class="cart__item" v-for="(item,index) in cartList">
-                            <div class="cart__item--name">{{item.foodname}}</div>
+                            <div class="cart__item--name" :data-mdid="item.foodmdid">{{item.foodname}}</div>
                             <div class="cart__item--price">￥<span>{{item.foodprice}}</span>
                             </div>
                             <div class="cart__item--number">
@@ -95,7 +95,7 @@
             }
         },
         created() {
-            console.log(this.$route.query.cartList);
+            console.log(this.$route.query.cartList,'.................cartList');
         },
         methods: {
             onBackButtonClick(){
@@ -174,8 +174,27 @@
             },
             //提交
             submitOrder(){
+                let _this = this;
+                console.log(_this.cartList,'========cartList=======');
+
+                let order_number = '';
+
+                let orderInfo = {
+                    userid:localStorage.getItem('userid'),
+                    sellerid:localStorage.getItem('sellerid')
+                };
+                /*$.post('/ssm/order/addOrder',orderInfo).then(function(sellerAllInfo) {
+                    _this.sellerAllInfo = sellerAllInfo;
+                    console.log(sellerAllInfo,'=======sellerAllInfo=======');
+                });*/
+
+
+
                 $toast.show('支付成功', 2000).then(() => {
-                    $router.push({path:'orderDetail',query:{cartList:this.cartList,totalnum:this.total,totalmoney:this.totalMoney,personNumber:this.personNumber}});
+                    $router.push({
+                        path:'orderDetail',
+                        query:{cartList:this.cartList,totalnum:this.total,totalmoney:this.totalMoney,personNumber:this.personNumber}
+                    });
                 })
             }
         },

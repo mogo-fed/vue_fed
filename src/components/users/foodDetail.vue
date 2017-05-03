@@ -32,7 +32,7 @@
                                 <ul>
                                     <li v-for="(food,index) in item.menuDetail"  @click="menuChoose(indexClass,index,food)"
                                         :class="selectedFood.indexOf(indexClass+''+index) > -1?'food-item choose':'food-item'"
-                                        :data-name="food.mdName" :data-price="food.mdNowprice">
+                                        :data-name="food.mdName" :data-price="food.mdNowprice" :data-mdid="food.mdId">
                                         <div class="icon"><img width="57" height="57" :src="food.mdImg" /></div>
                                         <div class="content">
                                             <h2>{{food.mdName}}</h2>
@@ -124,6 +124,7 @@ export default {
 
         //取出上一个页面传过来的商家id
         this.sellerId = this.$route.query.sellerId;
+        localStorage.setItem('sellerid',this.sellerId);
         //获取商家基本信息
         this.getSellerInfo();
         //获取商家所有菜品信息
@@ -206,10 +207,10 @@ export default {
         menuChoose(indexClass,i, food){
             let s=indexClass+''+i;
             let index = this.selectedFood.indexOf(s);
-            console.log(index);
             let chooseFood={
                 foodname:$(event.currentTarget).data('name'),
                 foodprice:$(event.currentTarget).data('price'),
+                foodmdid:$(event.currentTarget).data('mdid'),
                 foodnumber:1
             };
             if (index == -1) {
@@ -219,7 +220,6 @@ export default {
                 this.selectedFood.splice(index, 1);
                 this.cartList.splice(index, 1);
             }
-            console.log(this.selectedFood,'-0000');
 
             this.selectedFood.sort();
             this.cartList.sort();
