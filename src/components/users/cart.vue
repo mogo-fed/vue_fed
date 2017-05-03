@@ -174,9 +174,30 @@
             },
             //提交
             submitOrder(){
-                $toast.show('支付成功', 2000).then(() => {
-                    $router.push({path:'orderDetail',query:{cartList:this.cartList,totalnum:this.total,totalmoney:this.totalMoney,personNumber:this.personNumber}});
+                //order/addOrder
+                //userid, sellerid, mdids, order_create_time, order_number
+
+                
+                var params={
+                    userid:localStorage.userid,
+                    sellerid:localStorage.sellerid,
+                    mdids:[]
+                }
+                this.cartList.forEach(function(item) {
+                    params.mdids.push(item.foodmdid+'-'+item.foodnumber)
                 })
+                $.post('/ssm/order/addOrder',params).then(function (sellerInfo) {
+                    
+                    $toast.show('支付成功', 2000).then(() => {
+                    $router.push({path:'orderDetail',query:{cartList:this.cartList,totalnum:this.total,totalmoney:this.totalMoney,personNumber:this.personNumber}});
+                    })
+
+                });
+
+
+
+
+                
             }
         },
         computed: {
