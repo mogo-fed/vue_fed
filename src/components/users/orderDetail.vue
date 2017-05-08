@@ -77,12 +77,10 @@
           </item>
         </list>
 
-
       </div>
 
       <!--底部购物车-->
-      <div class="order__again">再来一单
-      </div>
+      <!--<div class="order__again">再来一单</div>-->
     </div>
   </div>
 </template>

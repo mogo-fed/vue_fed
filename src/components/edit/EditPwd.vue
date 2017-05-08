@@ -31,12 +31,11 @@
                   $toast.show('密码不一致！');
                   return;
               }
-//              console.log(this.userinfo,'userinfo');
               let info={
                   username:this.username,
                   userpwd:this.newpwd
               }
-              $.get('/ssm/user/updateUserPwd',info).then(function (data) {
+              $.post('/ssm/user/updateUserPwd',info).then(function (data) {
                   console.log(data,'savepwd');
                   if(data == 1){
                       $toast.show('修改密码成功！');

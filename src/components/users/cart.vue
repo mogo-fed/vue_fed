@@ -76,7 +76,7 @@
             <!--底部购物车-->
             <div class="cart__footer">
                 <div class="cart__money">￥{{totalMoney}}</div>
-                <div class="cart__submit" @click="submitOrder()">支付订单</div>
+                <div class="cart__submit" @click="submitOrder()">提交订单</div>
             </div>
         </div>
     </div>
@@ -191,7 +191,7 @@
                 params.mdids = params.mdids.join('_');
                 console.log(params.mdids,'=========params.mdids');
                 $.post('/ssm/order/addOrder',params).then(function (data) {
-                    $toast.show('支付成功', 500).then(() => {
+                    $toast.show('提交订单成功', 500).then(() => {
                         $router.push({
                             path:'orderDetail',
                             query:{cartList:_this.cartList,totalnum:_this.total,totalmoney:_this.totalMoney,personNumber:_this.personNumber}

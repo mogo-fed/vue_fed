@@ -5,8 +5,13 @@
     </von-header>
     <div class="page-content" style="padding-top: 45px;">
       <div style="height:10px;width:100%;"></div>
+
+      <div v-show="orderPerShow" style="text-align: center; margin-top: 10%;">
+        暂无订单~
+      </div>
+
       <!--全部订单列表-->
-      <div class="order-list">
+      <div class="order-list" v-show="orderPer.length != 0">
         <div class="order-list-item" v-for="item in orderPer">
           <div class="item-top">
             <img src="src/static/images/seller1.jpg" alt="" class="left">
@@ -58,6 +63,7 @@
         data() {
             return {
                 orderPer:{},
+                orderPerShow:true,
                 total:[]
             }
         },
@@ -68,6 +74,10 @@
             getOrderDetailAll(){
                 let _this = this;
                 $.post('/ssm/orderdetail/queryOrderDetailAll',{userid:localStorage.userid}).then(function (order) {
+                    console.log(order)
+                    if(order.length != 0){
+                        _this.orderPerShow = false;
+                    }
                     let data={};
                     order.forEach((v,k)=>{
                         data[v.orderNumber]?data[v.orderNumber].push(v):data[v.orderNumber]=[v];
