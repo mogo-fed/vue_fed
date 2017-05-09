@@ -34,10 +34,93 @@
 
         </div>
 
-        <div class="text-center" v-if="show == 1">历史订单</div>
+
+          <!--历史订单-->
+        <div class="text-center" v-if="show == 1">
+
+            <!--<div v-show="orderPerShow" style="text-align: center; margin-top: 10%;">
+                  暂无订单~
+              </div>-->
+
+            <!--历史订单列表-->
+            <div class="order-list">
+                <div class="order-list-item" v-for="item in 1">
+                    <div class="item-top">
+                        <img src="src/static/images/seller1.jpg" alt="" class="left">
+                        <div class="left">
+                            <span class="seller-title">湘香情</span>
+                            <i class="ion-ios-arrow-right"></i>
+                        </div>
+                        <span class="order-state right">订单完成</span>
+                    </div>
+
+                    <item class="item-center" @click.native="$router.forward('/users/orderInfo')">
+                        <ul>
+                            <li v-for="it in 1" >
+                                <span>{{it.mdName}}</span>
+                                <span class="right">x {{it.orderSingleNumber}}</span>
+                                <span style="margin: 0 20%;">{{it.mdNowprice}}</span>
+                            </li>
+
+                            <div style="margin: 10px 0;">
+                                    <span class="right" v-for="(count,index) in total">
+                                        共<span>{{count.num}}</span>件商品&nbsp;&nbsp;
+                                        实付<span class="factpay">￥ <em>{{count.price}}</em></span>
+                                    </span>
+                            </div>
+                        </ul>
+                    </item>
+                    <div class="item-bottom right">
+                        <button class="rebuy">查看评价</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+          <!--待处理订单-->
         <div class="text-center" v-if="show == 2">
-          <p>待处理订单</p>
-          <button class="button button-assertive" @click="updateBadge(2)">update badge</button>
+
+                <!--<div v-show="orderPerShow" style="text-align: center; margin-top: 10%;">
+                    暂无订单~
+                </div>-->
+
+                <!--待处理订单列表-->
+                <div class="order-list">
+                    <div class="order-list-item" v-for="item in 1">
+                        <div class="item-top">
+                            <img src="src/static/images/seller1.jpg" alt="" class="left">
+                            <div class="left">
+                                <span class="seller-title">湘香情</span>
+                                <i class="ion-ios-arrow-right"></i>
+                            </div>
+                            <span class="order-state right">订单待处理</span>
+                        </div>
+
+                        <item class="item-center" @click.native="$router.forward('/users/orderInfo')">
+                            <ul>
+                                <li v-for="it in item" >
+                                    <span>{{it.mdName}}</span>
+                                    <span class="right">x {{it.orderSingleNumber}}</span>
+                                    <span style="margin: 0 20%;">{{it.mdNowprice}}</span>
+                                </li>
+
+                                <div style="margin: 10px 0;">
+                                    <span class="right" v-for="(count,index) in total">
+                                        共<span>{{count.num}}</span>件商品&nbsp;&nbsp;
+                                        实付<span class="factpay">￥ <em>{{count.price}}</em></span>
+                                    </span>
+                                </div>
+                            </ul>
+                        </item>
+                        <div class="item-bottom right">
+                            <button class="rebuy">接单</button>
+                            <button class="goassess">拒单</button>
+                        </div>
+                    </div>
+                </div>
+
+          <!--<button class="button button-assertive" @click="updateBadge(2)">update badge</button>-->
         </div>
       </div>
   </div>
@@ -80,7 +163,11 @@
         useravatar: null,
         userdistributionpay:'',
         modal: undefined,
-        menuSortData:[]
+        menuSortData:[],
+
+          orderPer:{},
+          orderPerShow:true,
+          total:[]
       }
     },
     // computed: {
@@ -91,6 +178,7 @@
     // },
     created(){
         this.selectSellerInfo();
+        this.getOrderDetailAll();
     },
     mounted() {
       window.vmm=this
@@ -162,7 +250,7 @@
         },
 
         //查询所有菜单种类
-        //TODO:某种情况 切换tab之后，在第一个页面中出现两次重复数据，原因：第一次请求数据没有清空，需要知道切换的事件。
+        // TODO:某种情况 切换tab之后，在第一个页面中出现两次重复数据，原因：第一次请求数据没有清空，需要知道切换的事件。
         selectMenuSortAll(){
             var _this = this;
             $.post('/ssm/menusort/queryMenuSortAll',{sellerId:localStorage.getItem('userid')}).then(function (menuSortData) {
@@ -175,7 +263,7 @@
             });
         },
 
-        //TODO:根据username查询商家信息，若已经完善过电话、地址等信息，则登录后跳过完善信息页 到添加菜单页
+        // TODO:根据username查询商家信息，若已经完善过电话、地址等信息，则登录后跳过完善信息页 到添加菜单页
         selectSellerInfo(){
             let _this = this;
             let sellerInfo = {
@@ -209,7 +297,27 @@
                 });
                 this.detailModal.show();
             })
+        },
+
+/*============================================待处理订单=========================================================================*/
+        getOrderDetailAll(){
+            let _this = this;
+            $.post('/ssm/orderdetail/queryOrderDetailAll',{userid:localStorage.userid}).then(function (order) {
+//                console.log(order)
+                if(order.length != 0){
+                    _this.orderPerShow = false;
+                }
+                let data={};
+                order.forEach((v,k)=>{
+                    data[v.orderNumber]?data[v.orderNumber].push(v):data[v.orderNumber]=[v];
+                });
+                _this.orderPer = data;
+                console.log(_this.orderPer,'------------');
+            });
         }
+
+
+
     },
     beforeDestroy() {
       $tabbar.$emit('hideTabbar');
@@ -222,7 +330,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="sass" type="text/css">
     .button.button-assertive:hover{
         background: #ea5a49;
         color: #fff;
@@ -253,6 +361,81 @@
     .fileBtn input{visibility: hidden;width: 100%;display: block;height: 50px;}
     .fileBtn span{position: absolute;left: 12px;bottom: 12px;padding-left: 35px;}
     .img{display: block;margin: 10px auto;}
+
+    .left{
+        float: left;
+    }
+    .right{
+        float: right;
+    }
+    button{
+        border:none;
+    }
+    .order-list{
+    .order-list-item{
+        background:#fff;
+        margin-bottom: 10px;
+        padding:10px;
+        overflow: hidden;
+    .item-top{
+        overflow: hidden;
+        padding-bottom:10px;
+        border-bottom:1px solid #eee;
+    img{
+        display: inline-block;
+        margin-right: 10px;
+        width: 50px;
+        height:50px;
+        -webkit-border-radius:100%;
+        -moz-border-radius:100%;
+        border-radius:100%;
+    }
+    .seller-title,i{
+        font-size: 20px;
+        font-weight:bold;
+        line-height: 50px;
+    }
+    .order-state{
+        margin-top: 15px;
+    }
+    }
+    .item-center{
+        border-bottom:1px solid #eee;
+        padding: 10px 20px 10px 60px;
+    li{
+        line-height:26px;
+        font-size:14px;
+        color: #666;
+    }
+    .factpay{
+        font-weight:bold;
+    }
+    }
+    .item-bottom{
+        padding-top: 10px;
+        font-size:16px;
+    .rebuy{
+        background: #fff;
+        border:1px solid #ccc;
+        width:100px;
+        line-height:30px;
+        -webkit-border-radius:4px;
+        -moz-border-radius:4px;
+        border-radius:4px;
+    }
+    .goassess{
+        background: #ea5a49;
+        border:1px solid #ccc;
+        width:100px;
+        line-height:30px;
+        color: #fff;
+        -webkit-border-radius:4px;
+        -moz-border-radius:4px;
+        border-radius:4px;
+    }
+    }
+    }
+    }
 
 </style>
 

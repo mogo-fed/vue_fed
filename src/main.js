@@ -20,6 +20,7 @@ import PageFromTabbar from './components/users/PageFromTabbar'
 import chooseAddrModal from './components/users/chooseAddrModal'
 
 import orderDetail from './components/users/orderDetail'
+import orderInfo from './components/users/orderInfo'
 
 //foodDetail
 import foodDetail from './components/users/foodDetail'
@@ -47,6 +48,7 @@ const routes = [
     { path: '/chooseAddrModal', component: chooseAddrModal },
 
     { path: '/users/orderDetail', component: orderDetail },
+    { path: '/users/orderInfo', component: orderInfo },
     { path: '/users/foodDetail', component: foodDetail },
     { path: '/users/cart', component: cart },
     {

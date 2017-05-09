@@ -172,12 +172,8 @@
                 this.cartList[index].foodnumber += 1;
                 console.log('addNumber');
             },
-            //提交
+            //提交订单 向服务器推送消息
             submitOrder(){
-
-                //order/addOrder
-                //userid, sellerid, mdids, order_create_time, order_number
-
                 let _this = this;
                 var params={
                     userid:localStorage.userid,

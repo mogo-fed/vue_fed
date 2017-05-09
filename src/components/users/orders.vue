@@ -22,7 +22,7 @@
             <span class="order-state right">订单完成</span>
           </div>
 
-          <item class="item-center" @click.native="$router.forward('/users/orderDetail')">
+          <item class="item-center" @click.native="$router.forward('/users/orderInfo')">
             <ul>
               <li v-for="it in item" >
                 <span>{{it.mdName}}</span>

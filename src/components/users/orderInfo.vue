@@ -1,11 +1,62 @@
 <template>
-  <div class="page has-navbar has-tabbar"  v-nav="{title: '订单详情', showBackButton: true,onBackButtonClick}">
-    <div class="page-content" style="padding-top: 45px;height:100%;">
-      <div class="cart__content">
+  <div class="page has-navbar has-tabbar"  v-nav="{title: '订单', showBackButton: true}">
+    <tabs :tab-items="tabs" :tab-index="tabIndex" :on-tab-click="onTabClick"></tabs>
+    <div class="page-content" style="height:100%;">
+      <div class="order-status" v-show="tabIndex==0">
+        <list>
+          <item class="item-title">
+            订单已提交
+            <span class="item-note">
+            下单时间
+          </span>
+          </item>
+          <item thin>
+            请耐心等待商家确认
+          </item>
+        </list>
+
+        <list>
+          <item class="item-title">
+            商家已接单
+            <span class="item-note">
+            下单时间
+          </span>
+          </item>
+          <item thin>
+            商品准备中，由商家配送，配送进度请咨询商家
+          </item>
+        </list>
+
+        <!--地图-->
+        <div class="map">
+
+        </div>
+
+        <list>
+          <item  class="item-title">
+            商家配送中
+            <span class="item-note">
+            下单时间
+          </span>
+          </item>
+          <item thin>
+            请等待配送
+          </item>
+        </list>
+
+        <list>
+          <item>
+            <span class="finish">配送完成</span>
+          </item>
+        </list>
+
+      </div>
+
+      <div class="cart__content" v-show="tabIndex==1">
         <!-- 订单已完成 -->
         <div class="order__top">
-            <img src="src/static/images/success.png" />
-            <span>订单已完成</span>
+          <img src="src/static/images/success.png" />
+          <span>订单已完成</span>
         </div>
         <!--列表-->
         <div class="cart__list">
@@ -77,10 +128,10 @@
           </item>
         </list>
 
+        <!--底部购物车-->
+        <div class="order__again">再来一单</div>
       </div>
 
-      <!--底部购物车-->
-      <div class="order__again">再来一单</div>
     </div>
   </div>
 </template>
@@ -90,6 +141,11 @@
     export default {
         data() {
             return {
+                tabs: [
+                    "订单状态",
+                    "订单详情"
+                ],
+                tabIndex: 0,
                 cartList: this.$route.query.cartList
             }
         },
@@ -97,17 +153,38 @@
             console.log(this.$route.query.cartList,'cartList============');
         },
         methods: {
-            onBackButtonClick(){
-                console.log('=====onBackButtonClick=====')
-                $app.$router.back('./home');
+            //tab切换时 处理输入框显示隐藏
+            onTabClick(index) {
+                console.log(this.tabIndex);
+                if (index == 1){
+                    this.tabIndex = 0;
+                }else if(index == 0){
+                    this.tabIndex = 1;
+                }
+                this.tabIndex = index;
             }
-        },
-        computed:{
         }
     }
 </script>
 
 <style scoped lang="sass" type="text/css">
+  .map{
+    width:100%;
+    height:200px;
+    margin-bottom: 20px;
+  }
+  .finish{
+    font-size:16px;
+    color: orange;
+  }
+  .order-status .list,list{
+    border-left: 2px solid orange;
+    margin-left: 20px;
+  }
+  .item-title{
+    color: orange;
+    font-size: 14px !important;
+  }
   .item {
     font-size: 12px;
   }
@@ -134,7 +211,7 @@
   }
 
   .cart__content {
-    height: calc(100% - 52px);
+    /*height: calc(100% - 52px);*/
     overflow-y: scroll;
     overflow-x: hidden;
   }
