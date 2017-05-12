@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <title>xyz外卖系统</title>
+  <title>xyz外卖配送APP</title>
   <!-- font 文字图标引用文件 -->
   <link href="src/static/plugin/fontello/css/fontello.css" rel="stylesheet"/>
   <link href="src/static/plugin/fontello/css/fontello-codes.css" rel="stylesheet"/>
@@ -11,6 +11,28 @@
   <link href="src/static/plugin/fontello/css/fontello-ie7.css" rel="stylesheet"/>
   <link href="src/static/plugin/fontello/css/fontello-ie7-codes.css" rel="stylesheet"/>
    <!-- /font 文字图标引用文件 -->
+
+  <script src="https://cdn.bootcss.com/socket.io/1.7.3/socket.io.js"></script>
+
+  <script src="http://api.map.baidu.com/api?v=2.0&ak=kAXLL98WsH5D2OM1qUGMX2lx"></script>
+
+  <script>
+          var socket = io('http://localhost:3000');
+
+          function sendMsg(fromUserId,toUserId,msg) {
+              socket.emit('chat message', {
+                  fromUserId: fromUserId,
+                  toUserId: toUserId,
+                  msg:msg
+              });
+          }
+
+          socket.on('some event',function (msg) {
+              typeof socketCallback=='function'?socketCallback(msg):null;
+          })
+  </script>
+
+
 </head>
 <body font="pingfang">
 <von-app></von-app>

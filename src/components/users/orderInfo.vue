@@ -1,16 +1,16 @@
 <template>
-  <div class="page has-navbar has-tabbar"  v-nav="{title: '订单', showBackButton: true}">
+  <div class="page has-navbar has-tabbar"  v-nav="{title: '订单', showBackButton: true,onBackButtonClick}">
     <tabs :tab-items="tabs" :tab-index="tabIndex" :on-tab-click="onTabClick"></tabs>
     <div class="page-content" style="height:100%;">
       <div class="order-status" v-show="tabIndex==0">
         <list>
-          <item class="item-title">
+          <item class="item-title active">
             订单已提交
-            <span class="item-note">
+            <!--<span class="item-note">
             下单时间
-          </span>
+          </span>-->
           </item>
-          <item thin>
+          <item thin class="item-note-msg active">
             请耐心等待商家确认
           </item>
         </list>
@@ -18,11 +18,11 @@
         <list>
           <item class="item-title">
             商家已接单
-            <span class="item-note">
+           <!-- <span class="item-note">
             下单时间
-          </span>
+          </span>-->
           </item>
-          <item thin>
+          <item thin class="item-note-msg">
             商品准备中，由商家配送，配送进度请咨询商家
           </item>
         </list>
@@ -35,18 +35,18 @@
         <list>
           <item  class="item-title">
             商家配送中
-            <span class="item-note">
+           <!-- <span class="item-note">
             下单时间
-          </span>
+          </span>-->
           </item>
-          <item thin>
+          <item thin class="item-note-msg">
             请等待配送
           </item>
         </list>
 
         <list>
-          <item>
-            <span class="finish">配送完成</span>
+          <item  class="item-title">
+            配送完成
           </item>
         </list>
 
@@ -162,6 +162,9 @@
                     this.tabIndex = 1;
                 }
                 this.tabIndex = index;
+            },
+            onBackButtonClick:function () {
+                $router.back('./orders');
             }
         }
     }
@@ -173,17 +176,27 @@
     height:200px;
     margin-bottom: 20px;
   }
-  .finish{
-    font-size:16px;
-    color: orange;
-  }
   .order-status .list,list{
     border-left: 2px solid orange;
     margin-left: 20px;
   }
   .item-title{
+    color: #ddd;
+    font-size: 14px !important;
+    background-color:#eee;
+  }
+  .item-title.active{
     color: orange;
     font-size: 14px !important;
+    background-color:#fff;
+  }
+  .item-note-msg{
+    color: #ddd;
+    background-color:#eee;
+  }
+  .item-note-msg.active{
+    color: #666;
+    background-color:#fff;
   }
   .item {
     font-size: 12px;

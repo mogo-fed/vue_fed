@@ -234,6 +234,7 @@ export default {
             if(!this.isActive){
                 return ;
             }
+            localStorage.setItem('cartList',JSON.stringify(this.cartList));
             $router.push({path:'cart',query:{cartList:this.cartList}});
         }
     }

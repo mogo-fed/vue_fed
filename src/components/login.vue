@@ -52,7 +52,13 @@
                     localStorage.setItem('userpwd',data.userPwd);
                     localStorage.setItem('usertype',data.userType);
                     localStorage.setItem('usertel',data.userTel);
-                    localStorage.setItem('userid',data.userId);
+
+                    if(_this.usertype == 0){
+                        localStorage.setItem('userid',data.userId);
+                    }else {
+                        localStorage.setItem('loginSellerId',data.userId);
+                    }
+
                     if(_this.usertype == 0){  //普通用户，跳转至商家列表 home
                         $router.replace('/users/home');
                     }else { //商家，跳转至BS sellerInfo

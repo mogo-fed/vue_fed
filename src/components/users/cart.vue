@@ -90,17 +90,19 @@
             return {
                 chooseAddrInfo:{},
                 personNumber: '以便商家给您带够餐具',
-                cartList: this.$route.query.cartList,
+                cartList: [],
                 userid : localStorage.getItem('userid')
             }
         },
         created() {
-            console.log(this.$route.query.cartList,'.................cartList');
+            this.cartList = this.$route.query.cartList ? this.$route.query.cartList : JSON.stringify(localStorage.cartList);
+            console.log(this.cartList,'.................cartList');
         },
         methods: {
             onBackButtonClick(){
                 $app.$router.back('./home');
             },
+            /*选择收货地址面板*/
             showActionAddr(){
                 $modal.fromComponent(chooseAddrModal, {
                     title: '选择收货地址',
@@ -172,8 +174,12 @@
                 this.cartList[index].foodnumber += 1;
                 console.log('addNumber');
             },
+
             //提交订单 向服务器推送消息
             submitOrder(){
+
+                sendMsg(localStorage.userid,localStorage.sellerid,'您有一个新的外卖订单，请尽快处理');
+
                 let _this = this;
                 var params={
                     userid:localStorage.userid,
@@ -185,11 +191,11 @@
                     params.mdids.push(item.foodmdid+'-'+item.foodnumber);
                 });
                 params.mdids = params.mdids.join('_');
-                console.log(params.mdids,'=========params.mdids');
+//                console.log(params.mdids,'=========params.mdids');
                 $.post('/ssm/order/addOrder',params).then(function (data) {
                     $toast.show('提交订单成功', 500).then(() => {
                         $router.push({
-                            path:'orderDetail',
+                            path:'orderInfo',
                             query:{cartList:_this.cartList,totalnum:_this.total,totalmoney:_this.totalMoney,personNumber:_this.personNumber}
                         });
                     })

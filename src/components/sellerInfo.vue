@@ -147,7 +147,7 @@
             iconOn: 'ion-ios-person',
             iconOff: 'ion-ios-person',
             text: '待处理订单',
-            badge: 5
+            badge: 0
           }
         ],
         show: 0,
@@ -170,21 +170,25 @@
           total:[]
       }
     },
-    // computed: {
-    //     // 仅读取，值只须为函数
-    //   base64Img: function () {
-    //       return this.base64Img
-    //       }
-    // },
     created(){
+        let _this = this;
+        //注册商家的socket
+        window.sendMsg(localStorage.loginSellerId);
+        //消息通知
+        window.socketCallback=function (msg) {
+            _this.alertInform(msg.returnMsg);
+        }
+        //对商家基本信息进行显隐判断
         this.selectSellerInfo();
-        this.getOrderDetailAll();
+        //获取订单状态为待处理的详情，即order_status=1的
+        this.getOrderStatus1();
     },
     mounted() {
-      window.vmm=this
+      window.vmm=this;
     },
     methods: {
-        fileChange(){
+        /*上传图片*/
+      fileChange(){
             let oFReader = new FileReader(),
                 rFilter = /^(?:image\/bmp|image\/cis\-cod|image\/gif|image\/ief|image\/jpeg|image\/jpeg|image\/jpeg|image\/pipeg|image\/png|image\/svg\+xml|image\/tiff|image\/x\-cmu\-raster|image\/x\-cmx|image\/x\-icon|image\/x\-portable\-anymap|image\/x\-portable\-bitmap|image\/x\-portable\-graymap|image\/x\-portable\-pixmap|image\/x\-rgb|image\/x\-xbitmap|image\/x\-xpixmap|image\/x\-xwindowdump)$/i;
 
@@ -209,6 +213,7 @@
         updateBadge(menuIndex) {
           $tabbar.$emit('updateTabbarBadge', menuIndex, this.menus[menuIndex].badge++);
         },
+        /*添加菜单分类方法*/
         addMenuSortBtn() {
             $modal.fromComponent(addMenuSortModal, {
                 title: '添加我的菜单分类面板',
@@ -253,7 +258,7 @@
         // TODO:某种情况 切换tab之后，在第一个页面中出现两次重复数据，原因：第一次请求数据没有清空，需要知道切换的事件。
         selectMenuSortAll(){
             var _this = this;
-            $.post('/ssm/menusort/queryMenuSortAll',{sellerId:localStorage.getItem('userid')}).then(function (menuSortData) {
+            $.post('/ssm/menusort/queryMenuSortAll',{sellerId:localStorage.getItem('loginSellerId')}).then(function (menuSortData) {
                if(menuSortData.length != 0){
                    _this.addMenuSortPanl = true;
                }else {
@@ -300,10 +305,30 @@
         },
 
 /*============================================待处理订单=========================================================================*/
-        getOrderDetailAll(){
+
+        //确定添加分类的弹窗
+        alertInform(msg) {
             let _this = this;
-            $.post('/ssm/orderdetail/queryOrderDetailAll',{userid:localStorage.userid}).then(function (order) {
-//                console.log(order)
+            let options = {
+                effect: 'scale',
+                title: '',
+                buttons: [
+                    {text: '确定'},
+                    {text: '取消'},
+                ]
+            }
+            let popup = $popup.fromTemplate('<p style="margin-bottom: 0; text-align: center;">'+ msg + '</p>', options);
+            popup.show().then((buttonIndex) => {
+                if(buttonIndex == 0){
+                    _this.show = 2;
+                }
+            })
+        },
+        //查询待处理订单
+        getOrderStatus1(){
+            let _this = this;
+            $.post('/ssm/orderdetail/queryOrderDetailAll',{loginSellerId:localStorage.loginSellerId ,order_status:1}).then(function (order) {
+                console.log(order,'------------order1111');
                 if(order.length != 0){
                     _this.orderPerShow = false;
                 }

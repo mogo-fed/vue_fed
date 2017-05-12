@@ -68,19 +68,20 @@
             }
         },
         created() {
-            this.getOrderDetailAll();
+            //查询已完成订单
+            this.getOrderStatus3();
         },
         methods:{
-            getOrderDetailAll(){
+            getOrderStatus3(){
                 let _this = this;
                 $.post('/ssm/orderdetail/queryOrderDetailAll',{userid:localStorage.userid}).then(function (order) {
-                    console.log(order)
+                    console.log(order);
                     if(order.length != 0){
                         _this.orderPerShow = false;
                     }
                     let data={};
                     order.forEach((v,k)=>{
-                        data[v.orderNumber]?data[v.orderNumber].push(v):data[v.orderNumber]=[v];
+                        data[v.orderNumber] ? data[v.orderNumber].push(v) : data[v.orderNumber]=[v];
                     });
                     _this.orderPer = data;
                     console.log(_this.orderPer,'------------');
@@ -100,7 +101,7 @@
                     _this.total.push({
                         num:num,
                         price:price
-                    })
+                    });
                 }
                 console.log(_this.total,'totalNum---------');
             }

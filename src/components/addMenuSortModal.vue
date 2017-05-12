@@ -14,7 +14,7 @@
     data() {
       return {
           menusort: '',
-          sellerId:localStorage.getItem('userid')
+          sellerId:localStorage.getItem('loginSellerId')
       }
     },
       methods: {

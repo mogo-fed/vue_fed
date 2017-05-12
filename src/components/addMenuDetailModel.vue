@@ -39,7 +39,7 @@
         methods:{
             selectMenuSort(){
                 var _this  = this;
-                $.post('/ssm/menusort/queryMenuSortAll',{sellerId:localStorage.getItem('userid')}).then(function (menusort) {
+                $.post('/ssm/menusort/queryMenuSortAll',{sellerId:localStorage.getItem('loginSellerId')}).then(function (menusort) {
                     console.log(menusort);
                     _this.menusort.push(...menusort);
                 });
