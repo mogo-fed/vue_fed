@@ -124,7 +124,11 @@ export default {
 
         //取出上一个页面传过来的商家id
         this.sellerId = this.$route.query.sellerId;
+        this.sellerUserName = this.$route.query.sellerUserName;
+        this.userAvatar = this.$route.query.userAvatar;
         localStorage.setItem('sellerid',this.sellerId);
+        localStorage.setItem('sellerUserName',this.sellerUserName);
+        localStorage.setItem('userAvatar',this.userAvatar);
         //获取商家基本信息
         this.getSellerInfo();
         //获取商家所有菜品信息

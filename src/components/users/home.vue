@@ -83,7 +83,7 @@
             <!-- 商家列表 -->
 
             <div class="seller_list">
-                <item @click.native="toFoodDetail" v-for="item in sellerAllInfo" :data-sellerId="item.userId">
+                <item @click.native="toFoodDetail" v-for="item in sellerAllInfo" :data-sellerId="item.userId" :data-sellerusername="item.userSellerName" :data-sellerimg="item.userAvatar">
                     <div class="left seller_list_divimg">
                         <img :src='item.userAvatar' alt="商家图片">
                     </div>
@@ -133,8 +133,17 @@ export default {
             toFoodDetail(){
                 //得到当前选中的商家id
                 let sellerId = $(event.currentTarget).data('sellerid');
-                console.log(sellerId,'--------------sellerid-------');
-                $router.push({path:'foodDetail',query:{sellerId:sellerId}});
+                let sellerUserName = $(event.currentTarget).data('sellerusername');
+                let userAvatar = $(event.currentTarget).data('sellerimg');
+                console.log(sellerId,sellerUserName,userAvatar,'--------------sellerid-------');
+                $router.push({
+                    path:'foodDetail',
+                    query:{
+                        sellerId:sellerId,
+                        sellerUserName:sellerUserName,
+                        userAvatar:userAvatar
+                    }
+                });
             }
         },
         components: {},

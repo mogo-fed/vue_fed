@@ -14,12 +14,17 @@
       <div class="order-list" v-show="orderPer.length != 0">
         <div class="order-list-item" v-for="item in orderPer">
           <div class="item-top">
-            <img src="src/static/images/seller1.jpg" alt="" class="left">
+            <img v-show="item[0].userAvatar" :src="item[0].userAvatar" alt="" class="left">
+            <img src="../../static/images/restaurant.jpg" alt="" class="left">
             <div class="left">
-              <span class="seller-title">湘香情</span>
+              <span class="seller-title">{{item[0].userSellername}}</span>
               <i class="ion-ios-arrow-right"></i>
             </div>
-            <span class="order-state right">订单完成</span>
+
+            <span class="order-state right" v-show="item[0].order_status==1">等待商家接单</span>
+            <span class="order-state right" v-show="item[0].order_status==2">订单配送中</span>
+            <span class="order-state right" v-show="item[0].order_status==3">订单完成</span>
+
           </div>
 
           <item class="item-center" @click.native="$router.forward('/users/orderInfo')">
@@ -75,7 +80,7 @@
             getOrderStatus3(){
                 let _this = this;
                 $.post('/ssm/orderdetail/queryOrderDetailAll',{userid:localStorage.userid}).then(function (order) {
-                    console.log(order);
+                    console.log(order,'============orders');
                     if(order.length != 0){
                         _this.orderPerShow = false;
                     }

@@ -184,6 +184,8 @@
                 var params={
                     userid:localStorage.userid,
                     sellerid:localStorage.sellerid,
+                    usersellername:localStorage.sellerUserName,
+                    useravatar:localStorage.userAvatar,
                     mdids:[]
                 }
                 this.cartList.forEach(function(item) {
