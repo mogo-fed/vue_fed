@@ -183,6 +183,7 @@
                 let _this = this;
                 var params={
                     userid:localStorage.userid,
+                    username:localStorage.username,
                     sellerid:localStorage.sellerid,
                     usersellername:localStorage.sellerUserName,
                     useravatar:localStorage.userAvatar,
@@ -198,7 +199,12 @@
                     $toast.show('提交订单成功', 500).then(() => {
                         $router.push({
                             path:'orderInfo',
-                            query:{cartList:_this.cartList,totalnum:_this.total,totalmoney:_this.totalMoney,personNumber:_this.personNumber}
+                            query:{
+                                cartList:_this.cartList,
+                                totalnum:_this.total,
+                                totalmoney:_this.totalMoney,
+                                personNumber:_this.personNumber
+                            }
                         });
                     })
                 });

@@ -4,25 +4,21 @@
     <div class="page-content" style="height:100%;">
       <div class="order-status" v-show="tabIndex==0">
         <list>
-          <item class="item-title active">
+          <item class="item-title" :class="{active:orderstatus==1}">
             订单已提交
-            <!--<span class="item-note">
-            下单时间
-          </span>-->
+
           </item>
-          <item thin class="item-note-msg active">
+          <item thin class="item-note-msg" :class="{active:orderstatus==1}">
             请耐心等待商家确认
           </item>
         </list>
 
         <list>
-          <item class="item-title">
+          <item class="item-title" :class="{active:orderstatus==2}">
             商家已接单
-           <!-- <span class="item-note">
-            下单时间
-          </span>-->
+
           </item>
-          <item thin class="item-note-msg">
+          <item thin class="item-note-msg" :class="{active:orderstatus==2}">
             商品准备中，由商家配送，配送进度请咨询商家
           </item>
         </list>
@@ -33,19 +29,19 @@
         </div>
 
         <list>
-          <item  class="item-title">
+          <item  class="item-title" :class="{active:orderstatus==2}">
             商家配送中
            <!-- <span class="item-note">
             下单时间
           </span>-->
           </item>
-          <item thin class="item-note-msg">
+          <item thin class="item-note-msg" :class="{active:orderstatus==2}">
             请等待配送
           </item>
         </list>
 
         <list>
-          <item  class="item-title">
+          <item  class="item-title" :class="{active:orderstatus==3}">
             配送完成
           </item>
         </list>
@@ -56,7 +52,9 @@
         <!-- 订单已完成 -->
         <div class="order__top">
           <img src="src/static/images/success.png" />
-          <span>订单已完成</span>
+          <span v-if="orderstatus==1">等待商家接单</span>
+          <span v-if="orderstatus==2">订单配送中</span>
+          <span v-if="orderstatus==3">订单已完成</span>
         </div>
         <!--列表-->
         <div class="cart__list">
@@ -146,11 +144,18 @@
                     "订单详情"
                 ],
                 tabIndex: 0,
-                cartList: this.$route.query.cartList
+                cartList: this.$route.query.cartList,
+                isActive:false,
+                orderstatus:1
             }
         },
         created() {
-            console.log(this.$route.query.cartList,'cartList============');
+//            console.log(this.$route.query.cartList,'cartList============');
+            this.orderstatus = this.$route.query.orderstatus;
+            console.log(this.orderstatus,'this.orderstatus============');
+
+
+
         },
         methods: {
             //tab切换时 处理输入框显示隐藏

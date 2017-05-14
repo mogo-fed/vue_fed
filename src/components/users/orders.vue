@@ -15,20 +15,20 @@
         <div class="order-list-item" v-for="item in orderPer">
           <div class="item-top">
             <img v-show="item[0].userAvatar" :src="item[0].userAvatar" alt="" class="left">
-            <img src="../../static/images/restaurant.jpg" alt="" class="left">
+            <img v-show="!item[0].userAvatar" src="../../static/images/restaurant.jpg" alt="" class="left">
             <div class="left">
               <span class="seller-title">{{item[0].userSellername}}</span>
               <i class="ion-ios-arrow-right"></i>
             </div>
 
-            <span class="order-state right" v-show="item[0].order_status==1">等待商家接单</span>
-            <span class="order-state right" v-show="item[0].order_status==2">订单配送中</span>
-            <span class="order-state right" v-show="item[0].order_status==3">订单完成</span>
+            <span class="order-state right" v-show="item[0].orderStatus==1">等待商家接单</span>
+            <span class="order-state right" v-show="item[0].orderStatus==2">订单配送中</span>
+            <span class="order-state right" v-show="item[0].orderStatus==3">订单完成</span>
 
           </div>
 
-          <item class="item-center" @click.native="$router.forward('/users/orderInfo')">
-            <ul>
+          <item class="item-center">
+            <ul @click="checkOrderInfo" :data-orderstatus="item[0].orderStatus">
               <li v-for="it in item" >
                 <span>{{it.mdName}}</span>
                 <span class="right">x {{it.orderSingleNumber}}</span>
@@ -53,7 +53,11 @@
             </ul>
           </item>
           <div class="item-bottom right">
-            <button class="rebuy">再来一单</button>
+
+            <span v-if="item[0].orderStatus==1"></span>
+            <button class="rebuy" v-if="item[0].orderStatus==2" @click="receipt" :data-ordernumber="item[0].orderNumber">确认收货</button>
+            <button class="rebuy" v-if="item[0].orderStatus==3">再来一单</button>
+
             <button class="goassess">去评价</button>
           </div>
         </div>
@@ -73,7 +77,7 @@
             }
         },
         created() {
-            //查询已完成订单
+            //查询所有订单
             this.getOrderStatus3();
         },
         methods:{
@@ -109,6 +113,29 @@
                     });
                 }
                 console.log(_this.total,'totalNum---------');
+            },
+            // 用户点击确认收货，更改订单状态
+            receipt(){
+                let _this = this;
+                let ordernumber = $(event.currentTarget).data('ordernumber');
+                console.log(ordernumber,'========ordernumber');
+                $.post('/ssm/order/updateOrderStatus',{userid:localStorage.userid ,sellerid:0 ,order_number:ordernumber,order_status:3}).then(function (order) {
+                    console.log(order,'------------order222');
+                    if(order == 2){
+                        _this.getOrderStatus3();
+                    }
+                });
+            },
+            // 查看订单详情页
+            checkOrderInfo(){
+                let _this = this;
+                $router.push({
+                    path:'orderInfo',
+                    query:{
+                        orderstatus:$(event.currentTarget).data('orderstatus'),
+                        cartList:localStorage.cartList
+                    }
+                });
             }
         }
     }

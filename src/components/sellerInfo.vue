@@ -34,29 +34,28 @@
 
         </div>
 
-
           <!--历史订单-->
         <div class="text-center" v-if="show == 1">
 
-            <!--<div v-show="orderPerShow" style="text-align: center; margin-top: 10%;">
-                  暂无订单~
-              </div>-->
+            <div v-show="orderPerShow3" style="text-align: center; margin-top: 10%;">
+                暂无订单~
+            </div>
 
-            <!--历史订单列表-->
-            <div class="order-list">
-                <div class="order-list-item" v-for="item in 1">
+            <!--历史订单-->
+            <div class="order-list" v-show="!orderPerShow3">
+                <div class="order-list-item" v-for="item in sellerOrderPer3">
                     <div class="item-top">
-                        <img src="src/static/images/seller1.jpg" alt="" class="left">
+                        <!--<img src="src/static/images/seller1.jpg" alt="" class="left">-->
                         <div class="left">
-                            <span class="seller-title">湘香情</span>
+                            <span class="seller-title">{{item[0].userName}}</span>
                             <i class="ion-ios-arrow-right"></i>
                         </div>
-                        <span class="order-state right">订单完成</span>
+                        <span class="order-state right">已完成订单</span>
                     </div>
 
-                    <item class="item-center" @click.native="$router.forward('/users/orderInfo')">
+                    <item class="item-center">
                         <ul>
-                            <li v-for="it in 1" >
+                            <li v-for="it in item" >
                                 <span>{{it.mdName}}</span>
                                 <span class="right">x {{it.orderSingleNumber}}</span>
                                 <span style="margin: 0 20%;">{{it.mdNowprice}}</span>
@@ -71,7 +70,7 @@
                         </ul>
                     </item>
                     <div class="item-bottom right">
-                        <button class="rebuy">查看评价</button>
+                        <button class="goassess" @click="accept">查看评价</button>
                     </div>
                 </div>
             </div>
@@ -81,23 +80,22 @@
           <!--待处理订单-->
         <div class="text-center" v-if="show == 2">
 
-                <!--<div v-show="orderPerShow" style="text-align: center; margin-top: 10%;">
-                    暂无订单~
-                </div>-->
+                <div v-show="orderPerShow1" style="text-align: center; margin-top: 10%;">
+                    暂无待处理订单~
+                </div>
 
                 <!--待处理订单列表-->
-                <div class="order-list">
-                    <div class="order-list-item" v-for="item in 1">
+                <div class="order-list" v-show="!orderPerShow1">
+                    <div class="order-list-item" v-for="item in sellerOrderPer1">
                         <div class="item-top">
-                            <img src="src/static/images/seller1.jpg" alt="" class="left">
                             <div class="left">
-                                <span class="seller-title">湘香情</span>
+                                <span class="seller-title">{{item[0].userName}}</span>
                                 <i class="ion-ios-arrow-right"></i>
                             </div>
-                            <span class="order-state right">订单待处理</span>
+                            <span class="order-state right">待处理订单</span>
                         </div>
 
-                        <item class="item-center" @click.native="$router.forward('/users/orderInfo')">
+                        <item class="item-center">
                             <ul>
                                 <li v-for="it in item" >
                                     <span>{{it.mdName}}</span>
@@ -114,13 +112,12 @@
                             </ul>
                         </item>
                         <div class="item-bottom right">
-                            <button class="rebuy">接单</button>
+                            <button class="rebuy" @click="accept" :data-ordernumber="item[0].orderNumber">接单</button>
                             <button class="goassess">拒单</button>
                         </div>
                     </div>
                 </div>
 
-          <!--<button class="button button-assertive" @click="updateBadge(2)">update badge</button>-->
         </div>
       </div>
   </div>
@@ -165,8 +162,10 @@
         modal: undefined,
         menuSortData:[],
 
-          orderPer:{},
-          orderPerShow:true,
+          sellerOrderPer1:{},
+          sellerOrderPer3:{},
+          orderPerShow1:true,
+          orderPerShow3:true,
           total:[]
       }
     },
@@ -182,6 +181,8 @@
         this.selectSellerInfo();
         //获取订单状态为待处理的详情，即order_status=1的
         this.getOrderStatus1();
+        //获取订单状态为已完成的详情，即order_status=3的
+        this.getOrderStatus3();
     },
     mounted() {
       window.vmm=this;
@@ -305,8 +306,7 @@
         },
 
 /*============================================待处理订单=========================================================================*/
-
-        //确定添加分类的弹窗
+        //消息推送的弹窗
         alertInform(msg) {
             let _this = this;
             let options = {
@@ -319,29 +319,59 @@
             }
             let popup = $popup.fromTemplate('<p style="margin-bottom: 0; text-align: center;">'+ msg + '</p>', options);
             popup.show().then((buttonIndex) => {
+                // 去处理
                 if(buttonIndex == 0){
                     _this.show = 2;
+                    _this.getOrderStatus1();
                 }
             })
         },
         //查询待处理订单
         getOrderStatus1(){
             let _this = this;
-            $.post('/ssm/orderdetail/queryOrderDetailAll',{loginSellerId:localStorage.loginSellerId ,order_status:1}).then(function (order) {
-                console.log(order,'------------order1111');
+            $.post('/ssm/orderdetail/queryUserOrderDetail',{sellerid:localStorage.loginSellerId ,order_status:1}).then(function (order) {
+                console.log(order,'-------待处理订单-----order1111');
                 if(order.length != 0){
-                    _this.orderPerShow = false;
+                    _this.orderPerShow1 = false;
                 }
                 let data={};
                 order.forEach((v,k)=>{
                     data[v.orderNumber]?data[v.orderNumber].push(v):data[v.orderNumber]=[v];
                 });
-                _this.orderPer = data;
-                console.log(_this.orderPer,'------------');
+                _this.sellerOrderPer1 = data;
+                console.log(_this.sellerOrderPer1,'------------');
+            });
+        },
+        // 商家点击接单，更改订单状态
+        accept(){
+            let _this = this;
+            let ordernumber = $(event.currentTarget).data('ordernumber');
+            console.log(ordernumber,'========ordernumber');
+            $.post('/ssm/order/updateOrderStatus',{userid:0 ,sellerid:localStorage.loginSellerId ,order_number:ordernumber,order_status:2}).then(function (order) {
+                console.log(order,'------------order222');
+                if(order == 2){
+                    _this.getOrderStatus1();
+                }
+            });
+        },
+
+/*============================================历史订单=========================================================================*/
+        //查询历史订单
+        getOrderStatus3(){
+            let _this = this;
+            $.post('/ssm/orderdetail/queryUserOrderDetail',{sellerid:localStorage.loginSellerId ,order_status:3}).then(function (order) {
+                console.log(order,'-------历史订单-----order333');
+                if(order.length != 0){
+                    _this.orderPerShow3 = false;
+                }
+                let data={};
+                order.forEach((v,k)=>{
+                    data[v.orderNumber]?data[v.orderNumber].push(v):data[v.orderNumber]=[v];
+                });
+                _this.sellerOrderPer3 = data;
+                console.log(_this.sellerOrderPer3,'------------');
             });
         }
-
-
 
     },
     beforeDestroy() {
