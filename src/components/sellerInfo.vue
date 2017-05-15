@@ -9,6 +9,7 @@
                 <von-input type="text" v-model="useradr" placeholder="我的地址" label="商家地址"></von-input>
                 <von-input type="text" v-model="usersendpay" placeholder="起送费" label="起送费"></von-input>
                 <von-input type="text" v-model="userdistributionpay" placeholder="配送费" label="配送费"></von-input>
+                <von-input type="text" v-model="userloction" placeholder="商家位置" label="商家位置"></von-input>
                 <label class="fileBtn"><span>商家头像</span><input type="file" name="" v-on:change="fileChange"></label>
 
                 <img class="img" :src="useravatar" width="50%">
@@ -56,16 +57,16 @@
                     <item class="item-center">
                         <ul>
                             <li v-for="it in item" >
-                                <span>{{it.mdName}}</span>
-                                <span class="right">x {{it.orderSingleNumber}}</span>
-                                <span style="margin: 0 20%;">{{it.mdNowprice}}</span>
+                                <span class="left" style="display: inline-block;text-align:left;width: 55%;">{{it.mdName}}</span>
+                                <span class="right" style="margin-left: 10px;">x {{it.orderSingleNumber}}</span>
+                                <span>{{it.mdNowprice}}</span>
                             </li>
 
                             <div style="margin: 10px 0;">
-                                    <span class="right" v-for="(count,index) in total">
-                                        共<span>{{count.num}}</span>件商品&nbsp;&nbsp;
-                                        实付<span class="factpay">￥ <em>{{count.price}}</em></span>
-                                    </span>
+                                <span class="right" v-for="(count,index) in total">
+                                    共<span>{{count.num}}</span>件商品&nbsp;&nbsp;
+                                    实付<span class="factpay">￥ <em>{{count.price}}</em></span>
+                                </span>
                             </div>
                         </ul>
                     </item>
@@ -98,9 +99,9 @@
                         <item class="item-center">
                             <ul>
                                 <li v-for="it in item" >
-                                    <span>{{it.mdName}}</span>
-                                    <span class="right">x {{it.orderSingleNumber}}</span>
-                                    <span style="margin: 0 20%;">{{it.mdNowprice}}</span>
+                                    <span class="left" style="display: inline-block;text-align:left;width: 55%;">{{it.mdName}}</span>
+                                    <span class="right" style="margin-left: 10px;">x {{it.orderSingleNumber}}</span>
+                                    <span>{{it.mdNowprice}}</span>
                                 </li>
 
                                 <div style="margin: 10px 0;">
@@ -159,6 +160,7 @@
         usersendpay:'',
         useravatar: null,
         userdistributionpay:'',
+        userloction:'',
         modal: undefined,
         menuSortData:[],
 
@@ -243,6 +245,7 @@
               usertype:localStorage.getItem('usertype'),
               usersendpay:this.usersendpay,
               userdistributionpay:this.userdistributionpay,
+              userloction:this.userloction,
               useravatar:this.useravatar
           }
             $.post('/ssm/user/updateUser',updateInfo).then(function (updateUserData) {
@@ -456,7 +459,7 @@
     }
     .item-center{
         border-bottom:1px solid #eee;
-        padding: 10px 20px 10px 60px;
+        padding: 10px;
     li{
         line-height:26px;
         font-size:14px;

@@ -14,22 +14,21 @@
 
   <script src="https://cdn.bootcss.com/socket.io/1.7.3/socket.io.js"></script>
 
-  <!--<script src="http://api.map.baidu.com/api?v=2.0&ak=kAXLL98WsH5D2OM1qUGMX2lx"></script>-->
+  <script src="http://api.map.baidu.com/api?v=2.0&ak=7ZxBdiEy31AKf8KWRtzGNH9CptMmxkd7"></script>
 
   <script>
-          var socket = io('http://localhost:3000');
+      var socket = io('http://localhost:3000');
 
-          function sendMsg(fromUserId,toUserId,msg) {
-              socket.emit('chat message', {
-                  fromUserId: fromUserId,
-                  toUserId: toUserId,
-                  msg:msg
-              });
-          }
-
-          socket.on('some event',function (msg) {
-              typeof socketCallback=='function'?socketCallback(msg):null;
-          })
+      function sendMsg(fromUserId,toUserId,msg) {
+          socket.emit('chat message', {
+              fromUserId: fromUserId,
+              toUserId: toUserId,
+              msg:msg
+          });
+      }
+      socket.on('some event',function (msg) {
+          typeof socketCallback=='function'?socketCallback(msg):null;
+      })
   </script>
 
 

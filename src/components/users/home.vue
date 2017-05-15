@@ -19,7 +19,11 @@
             </div>
 
             <div class="index__menu">
-                <div class="index__location"><span><i class="demo-icon icon-location index__location--icon"></i></span><a class="index__location--name">江宁路凯迪克大厦</a></div>
+                <div class="index__location">
+                    <span><i class="demo-icon icon-location index__location--icon"></i></span>
+                    <div id="allmap"></div>
+                    <a class="index__location--name">江宁路凯迪克大厦</a>
+                </div>
 
                 <ul class="index__menu--ul">
                     <li>
@@ -116,6 +120,8 @@ export default {
         },
         created() {
             this.getUserAll();
+            // 获取地址
+            this.initCurrentLocation();
         },
         methods: {
             back() {
@@ -144,6 +150,32 @@ export default {
                         userAvatar:userAvatar
                     }
                 });
+            },
+            // 获取当前位置
+            initCurrentLocation(){
+                // 百度地图API功能
+                let map = new BMap.Map("allmap");
+                let point = new BMap.Point(116.331398,39.897445);
+                map.centerAndZoom(point,12);
+
+                map.setMapStyle({
+                    style: 'googlelite'
+                }); //精简风格
+                map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+                map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+
+                let geolocation = new BMap.Geolocation();
+                geolocation.getCurrentPosition(function(r){
+                    if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                        let mk = new BMap.Marker(r.point);
+                        map.addOverlay(mk);
+                        map.panTo(r.point);
+                        console.log('您的位置：'+r.point.lng+','+r.point.lat);
+                    }
+                    else {
+                        alert('failed'+this.getStatus());
+                    }
+                },{enableHighAccuracy: true});
             }
         },
         components: {},

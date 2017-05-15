@@ -23,16 +23,17 @@
 
             <span class="order-state right" v-show="item[0].orderStatus==1">等待商家接单</span>
             <span class="order-state right" v-show="item[0].orderStatus==2">订单配送中</span>
-            <span class="order-state right" v-show="item[0].orderStatus==3">订单完成</span>
+            <span class="order-state right" v-show="item[0].orderStatus==3">订单已完成</span>
+            <span class="order-state right" v-show="item[0].orderStatus==0">订单已取消</span>
 
           </div>
 
           <item class="item-center">
             <ul @click="checkOrderInfo" :data-orderstatus="item[0].orderStatus">
               <li v-for="it in item" >
-                <span>{{it.mdName}}</span>
-                <span class="right">x {{it.orderSingleNumber}}</span>
-                <span style="margin: 0 20%;">{{it.mdNowprice}}</span>
+                <span class="left" style="display: inline-block;text-align:left;width: 55%;">{{it.mdName}}</span>
+                <span class="right" style="margin-left: 10px;">x {{it.orderSingleNumber}}</span>
+                <span>{{it.mdNowprice}}</span>
               </li>
 
               <div style="margin: 10px 0;">
@@ -58,7 +59,9 @@
             <button class="rebuy" v-if="item[0].orderStatus==2" @click="receipt" :data-ordernumber="item[0].orderNumber">确认收货</button>
             <button class="rebuy" v-if="item[0].orderStatus==3">再来一单</button>
 
-            <button class="goassess">去评价</button>
+            <button class="goassess" v-if="item[0].orderStatus==1" @click="cancelOrder" :data-ordernumber="item[0].orderNumber">取消订单</button>
+            <button class="goassess" v-if="item[0].orderStatus==2">拒接收货</button>
+            <button class="goassess" v-if="item[0].orderStatus==3">去评价</button>
           </div>
         </div>
       </div>
@@ -136,6 +139,18 @@
                         cartList:localStorage.cartList
                     }
                 });
+            },
+            // 订单处于未接单状态，用户点击取消订单，更改订单状态为0
+            cancelOrder(){
+                let _this = this;
+                let ordernumber = $(event.currentTarget).data('ordernumber');
+                console.log(ordernumber,'========ordernumber');
+                $.post('/ssm/order/updateOrderStatus',{userid:localStorage.userid ,sellerid:0 ,order_number:ordernumber,order_status:0}).then(function (order) {
+                    console.log(order,'------------order000');
+                    if(order == 3){
+                        _this.getOrderStatus3();
+                    }
+                });
             }
         }
     }
@@ -181,7 +196,7 @@
       }
       .item-center{
         border-bottom:1px solid #eee;
-        padding: 10px 20px 10px 60px;
+        padding: 10px 10px 10px 20px;
         li{
           line-height:26px;
           font-size:14px;

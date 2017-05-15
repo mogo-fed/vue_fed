@@ -20,8 +20,7 @@
             iconOn: 'ion-ios-pricetags',
             iconOff: 'ion-ios-pricetags-outline',
             text: '订单',
-            path: '/users/orders',
-            badge: '1'
+            path: '/users/orders'
           },
           {
             iconOn: 'ion-ios-person',

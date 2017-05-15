@@ -24,7 +24,7 @@
         </list>
 
         <!--地图-->
-        <div class="map">
+        <div id="map">
 
         </div>
 
@@ -55,6 +55,7 @@
           <span v-if="orderstatus==1">等待商家接单</span>
           <span v-if="orderstatus==2">订单配送中</span>
           <span v-if="orderstatus==3">订单已完成</span>
+          <span v-if="orderstatus==0">订单已取消</span>
         </div>
         <!--列表-->
         <div class="cart__list">
@@ -86,45 +87,8 @@
               </div>
             </li>
           </ul>
-          <div class="cart__total">
-            <div class="cart__item--name">总计</div>
-            <div class="cart__item--price cart__total--price" style="color:#ea5a49;font-size: 14px;">￥{{$route.query.totalmoney}}
-            </div>
-            <div class="cart__item--number dark">
-              <span class="cart__num">{{$route.query.totalnum}}</span>
-            </div>
-          </div>
+
         </div>
-        <!-- 订单信息 -->
-        <list>
-          <item thin>
-            配送信息
-          </item>
-          <item>
-            订单号码
-            <span class="item-note">
-            1234567890
-          </span>
-          </item>
-          <item>
-            订单时间
-            <span class="item-note">
-            2017-04-15 17:16
-          </span>
-          </item>
-          <item>
-            支付方式
-            <span class="item-note">
-            在线支付
-          </span>
-          </item>
-          <item>
-            用餐人数
-            <span class="item-note">
-           {{$route.query.personNumber}}
-          </span>
-          </item>
-        </list>
 
         <!--底部购物车-->
         <div class="order__again">再来一单</div>
@@ -144,17 +108,16 @@
                     "订单详情"
                 ],
                 tabIndex: 0,
-                cartList: this.$route.query.cartList,
+                cartList: [],
                 isActive:false,
                 orderstatus:1
             }
         },
         created() {
-//            console.log(this.$route.query.cartList,'cartList============');
             this.orderstatus = this.$route.query.orderstatus;
+            this.cartList = JSON.parse(this.$route.query.cartList);
             console.log(this.orderstatus,'this.orderstatus============');
-
-
+            console.log(JSON.parse(this.$route.query.cartList),'cartList============');
 
         },
         methods: {
