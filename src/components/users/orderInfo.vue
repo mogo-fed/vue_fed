@@ -24,7 +24,8 @@
         </list>
 
         <!--地图-->
-        <div id="map">
+        <div class="showMapBtn" @click="showMapBtn">点击查看路程</div>
+        <div id="allmap" class="hide">
 
         </div>
 
@@ -119,8 +120,190 @@
             console.log(this.orderstatus,'this.orderstatus============');
             console.log(JSON.parse(this.$route.query.cartList),'cartList============');
 
+           /* $app.$nextTick(function () {
+                this.getCurrentLocation();
+            });*/
         },
         methods: {
+            // 获取当前位置
+          /*  getCurrentLocation(){
+                // 百度地图API功能
+                let map = new BMap.Map("allmap");
+                let point = new BMap.Point(121.462601,31.237669);
+                map.centerAndZoom(point,12);
+                //红色
+                var icon2 = new BMap.Icon('src/static/images/ding2.png', new BMap.Size(40, 40), {
+                    anchor: new BMap.Size(20, 40)
+                });
+
+                map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
+                map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
+                let geolocation = new BMap.Geolocation();
+
+                // 获取经纬度
+                geolocation.getCurrentPosition(function(r) {
+                    if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                        let mk = new BMap.Marker(r.point);
+                        map.addOverlay(mk);
+                        map.panTo(r.point);
+                        let xx = r.point.lng, yy = r.point.lat;
+                        map.centerAndZoom(r.point, 15);
+                        let markergps = new BMap.Marker(r.point, {
+                            icon: icon2
+                        });
+                        map.addOverlay(markergps); //添加GPS标注
+                        console.log('您的位置2：'+r.point.lng+','+r.point.lat);
+                        // 获取地名
+                        let gc = new BMap.Geocoder();
+                        let point = new BMap.Point(r.point.lng,r.point.lat);
+                        gc.getLocation(point, function(rs) {
+                            alert(rs.sematic_description);
+                            let addComp = rs.addressComponents;
+                            let mapAddress = addComp.province+addComp.city + addComp.district
+                                + addComp.street + addComp.streetNumber;
+                            console.log(mapAddress,'----------------');
+                        });
+                    } else {
+                        toast('定位失败' + this.getStatus());
+                    }
+                }, {
+                    enableHighAccuracy: true
+                });
+            },*/
+
+            getCurrentLocation(){
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showMap, handleError, {
+                        enableHighAccuracy: true,
+                        maximumAge: 1000
+                    });
+                } else {
+                    alert('您的浏览器不支持使用HTML 5来获取地理位置服务');
+                }
+
+                function showMap(value) {
+                    let map = new BMap.Map("allmap");
+                    let x = value.coords.longitude; //原始坐标121.450997,31.234389
+                    let y = value.coords.latitude;
+                    let ggPoint = new BMap.Point(x, y);
+                    map.centerAndZoom(ggPoint, 15);
+//                    alert('您的位置111：' + x + ',' + y);
+                    let _point = {"lng":x,"lat":y};
+                    let mk = new BMap.Marker(_point);
+                    map.addOverlay(mk);
+                    map.panTo(_point);
+                    let icon2 = new BMap.Icon('src/static/images/ding2.png', new BMap.Size(40, 40), {
+                        anchor: new BMap.Size(20, 40)
+                    });
+                    map.addControl(new BMap.NavigationControl({
+                        anchor: BMAP_ANCHOR_TOP_LEFT
+                    }));
+
+                    let markergps = new BMap.Marker(_point, {
+                        icon: icon2
+                    });
+                    map.addOverlay(markergps); //添加GPS标注
+
+                    // 获取地名
+                    let gc = new BMap.Geocoder();
+                    let point = new BMap.Point(x, y);
+                    gc.getLocation(point, function (rs) {
+                        console.log(JSON.stringify(rs), '=========getLocation');
+                        let addComp = rs.addressComponents;
+                        let mapAddress = addComp.province + addComp.city + addComp.district
+                            + addComp.street + addComp.streetNumber;
+                        alert(mapAddress, '----------------00000');
+                    });
+
+                    //原始坐标转百度坐标
+                    /*let convertor = new BMap.Convertor();
+                    let pointArr = [];
+                    pointArr.push(ggPoint);
+                    alert(111);
+                    convertor.translate(pointArr, 1, 5, translateCallback);
+                    alert(1112111);*/
+
+                    //坐标转换完之后的回调函数
+                    //translateCallback = function (data) {
+                        alert(3);
+                       // if (data.status === 0) {
+                            let newX = x;
+                            let newY = y;
+                            console.log('您的位置：' + newX + ',' + newY);
+                            let myP1 = new BMap.Point(newX, newY); //起点
+                            let myP2 = new BMap.Point(121.535155, 31.238999); //终点
+                            let myIcon = new BMap.Icon("http://developer.baidu.com/map/jsdemo/img/Mario.png", new BMap.Size(32, 70), { //小车图片
+                                imageOffset: new BMap.Size(0, 0) //图片的偏移量。为了是图片底部中心对准坐标点。
+                            });
+                            let driving2 = new BMap.DrivingRoute(map, {
+                                renderOptions: {
+                                    map: map,
+                                    autoViewport: true
+                                }
+                            });
+                            //驾车实例
+                            driving2.search(myP1, myP2); //显示一条公交线路
+                            run = function () {
+                                alert('run');
+                                let driving = new BMap.DrivingRoute(map); //驾车实例
+                                driving.search(myP1, myP2);
+                                driving.setSearchCompleteCallback(function () {
+                                    let pts = driving.getResults().getPlan(0).getRoute(0).getPath(); //通过驾车实例，获得一系列点的数组
+                                    let paths = pts.length; //获得有几个点
+                                    let carMk = new BMap.Marker(pts[0], {
+                                        icon: myIcon
+                                    });
+                                    map.addOverlay(carMk);
+                                    i = 0;
+                                    function resetMkPoint(i) {
+                                        carMk.setPosition(pts[i]);
+                                        if (i < paths) {
+                                            setTimeout(function () {
+                                                i++;
+                                                resetMkPoint(i);
+                                            }, 100);
+                                        }
+                                    }
+                                    setTimeout(function () {
+                                        resetMkPoint(5);
+                                    }, 100)
+                                });
+                            }
+                            setTimeout(function () {
+                                run();
+                            }, 1500);
+                    //    }
+                    //}
+
+                }
+
+                function handleError(value) {
+                    switch (value.code) {
+                        case 1:
+                            alert('位置服务被拒绝');
+                            break;
+                        case 2:
+                            alert('暂时获取不到位置信息');
+                            break;
+                        case 3:
+                            alert('获取信息超时');
+                            break;
+                        case 4:
+                            alert('未知错误');
+                            break;
+                    }
+                }
+
+            },
+
+            // TODO 一进入页面 在created生命周期还没有渲染完成，无法获取地图容器；
+            // TODO 使用$app.$nextTick(function () { }); 在created生命周期 $app 仍未定义
+            //点击按钮 查看地图
+            showMapBtn(){
+//                $('.showMapBtn').hide();
+                $('#allmap').show();
+                this.getCurrentLocation();
+            },
             //tab切换时 处理输入框显示隐藏
             onTabClick(index) {
                 console.log(this.tabIndex);
@@ -139,10 +322,14 @@
 </script>
 
 <style scoped lang="sass" type="text/css">
-  .map{
+  #allmap{
     width:100%;
-    height:200px;
+    height:250px;
     margin-bottom: 20px;
+  }
+  .showMapBtn{
+    padding: 0 20px 20px;
+    color: orange;
   }
   .order-status .list,list{
     border-left: 2px solid orange;

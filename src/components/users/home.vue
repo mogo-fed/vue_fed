@@ -155,27 +155,53 @@ export default {
             initCurrentLocation(){
                 // 百度地图API功能
                 let map = new BMap.Map("allmap");
-                let point = new BMap.Point(116.331398,39.897445);
+                let point = new BMap.Point(121.462601,31.237669);
                 map.centerAndZoom(point,12);
+                //红色
+                var icon2 = new BMap.Icon('src/static/images/ding2.png', new BMap.Size(40, 40), {
+                    anchor: new BMap.Size(20, 40)
+                });
 
                 map.setMapStyle({
                     style: 'googlelite'
                 }); //精简风格
                 map.enableScrollWheelZoom(); //启用滚轮放大缩小，默认禁用
                 map.enableContinuousZoom(); //启用地图惯性拖拽，默认禁用
-
                 let geolocation = new BMap.Geolocation();
-                geolocation.getCurrentPosition(function(r){
-                    if(this.getStatus() == BMAP_STATUS_SUCCESS){
+
+                // 获取经纬度
+                geolocation.getCurrentPosition(function(r) {
+                    if (this.getStatus() == BMAP_STATUS_SUCCESS) {
                         let mk = new BMap.Marker(r.point);
                         map.addOverlay(mk);
                         map.panTo(r.point);
+                        let xx = r.point.lng, yy = r.point.lat;
+                        map.centerAndZoom(r.point, 15);
+                        let markergps = new BMap.Marker(r.point, {
+                            icon: icon2
+                        });
+                        map.addOverlay(markergps); //添加GPS标注
                         console.log('您的位置：'+r.point.lng+','+r.point.lat);
+
+                        // 获取地名
+                        let gc = new BMap.Geocoder();
+                        let point = new BMap.Point(r.point.lng,r.point.lat);
+                        gc.getLocation(point, function(rs) {
+                            alert(rs.sematic_description);
+                            let addComp = rs.addressComponents;
+                            let mapAddress = addComp.province+addComp.city + addComp.district
+                                + addComp.street + addComp.streetNumber;
+                            console.log(mapAddress,'----------------');
+                            // 渲染页面地名
+                            $('.index__location--name').text(mapAddress);
+                        });
+                    } else {
+                        toast('定位失败' + this.getStatus());
                     }
-                    else {
-                        alert('failed'+this.getStatus());
-                    }
-                },{enableHighAccuracy: true});
+                }, {
+                    enableHighAccuracy: true
+                });
+
             }
         },
         components: {},
